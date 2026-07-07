@@ -1,0 +1,137 @@
+{
+  "minecraft": {
+    "bot": {
+      "prefix": "!",
+      "messageFormat": "{username} » {message}",
+      "messageRepeatBypassLength": 24
+    },
+    "commands": {
+      "normal": true,
+      "soopy": true
+    },
+    "fragBot": {
+      "enabled": true,
+      "whitelist": false,
+      "whitelisted": [],
+      "blacklist": false,
+      "blacklisted": []
+    },
+    "API": {
+      "hypixelAPIkey": "HYPIXEL_API_KEY",
+      "imgurAPIkey": "IMGUR_API_KEY"
+    },
+    "guildRequirements": {
+      "enabled": false,
+      "autoAccept": false,
+      "requirements": {
+        "bedwarsStars": -1,
+        "bedwarsFKDR": -1,
+
+        "skywarsStars": -1,
+        "skywarsKDR": -1,
+
+        "duelsWins": -1,
+        "duelsWLR": -1,
+
+        "skyblockLevel": -1
+      }
+    },
+    "skyblockEventsNotifications": {
+      "enabled": true,
+      "notifiers": {
+        "BANK_INTEREST": true,
+        "DARK_AUCTION": true,
+        "ELECTION_BOOTH_OPENS": true,
+        "ELECTION_OVER": true,
+        "FALLEN_STAR_CULT": true,
+        "FEAR_MONGERER": true,
+        "JACOBS_CONTEST": true,
+        "JERRYS_WORKSHOP": true,
+        "NEW_YEAR_CELEBRATION": true,
+        "SEASON_OF_JERRY": true,
+        "SPOOKY_FESTIVAL": true,
+        "TRAVELING_ZOO": true,
+        "HOPPITY_HUNT": true
+      },
+      "customTime": {
+        "2": ["BANK_INTEREST", "DARK_AUCTION", "JACOBS_CONTEST"]
+      }
+    },
+    "hypixelUpdates": {
+      "enabled": true,
+      "hypixelNews": true,
+      "statusUpdates": true,
+      "skyblockVersion": true,
+      "alphaPlayerCountTracker": true
+    }
+  },
+  "discord": {
+    "bot": {
+      "token": "DISCORD_BOT_TOKEN",
+      "serverID": ""
+    },
+    "channels": {
+      "guildChatChannel": "",
+      "officerChannel": "",
+      "loggingChannel": "",
+      "debugMode": true,
+      "debugChannel": "",
+      "debugChannelMessageMode": "text",
+      "allowedBots": [""]
+    },
+    "commands": {
+      "checkPerms": true,
+      "commandRole": "",
+      "blacklistRoles": ["BLACKLIST_ROLE_ID"],
+      "users": [""]
+    },
+    "other": {
+      "messageMode": "bot",
+      "messageFormat": "{chatType} > {skin} {rank} {username} {guildRank}§f: {message}",
+      "stripEmojisFromUsernames": true,
+      "filterMessages": true,
+      "filterWords": ["dox", "doxx", "doxed", "doxxed", "doxing", "doxxing", "doxes", "doxxes"],
+      "joinMessage": true,
+      "autoLimbo": false
+    }
+  },
+  "web": {
+    "enabled": false,
+    "port": 1439,
+    "token": "WEBSOCKET_TOKEN"
+  },
+  "verification": {
+    "enabled": false,
+    "nickname": "{username}",
+    "roles": {
+      "verified": {
+        "enabled": false,
+        "roleId": ""
+      },
+      "guildMember": {
+        "enabled": false,
+        "roleId": ""
+      },
+      "custom": []
+    },
+    "autoRoleUpdater": {
+      "enabled": false,
+      "interval": 24
+    },
+    "inactivity": {
+      "enabled": false,
+      "channel": "",
+      "maxInactivityTime": 30
+    }
+  },
+  "other": {
+    "autoUpdater": true,
+    "autoUpdaterInterval": 12,
+    "logToFiles": true
+  },
+  "statsChannels": {
+    "enabled": false,
+    "autoUpdaterInterval": 5,
+    "channels": [{ "id": "CHANNEL_ID", "name": "Guild Level: {guildLevel}" }]
+  }
+}
