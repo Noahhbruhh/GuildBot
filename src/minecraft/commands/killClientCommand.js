@@ -15,16 +15,17 @@ class KillClientCommand extends minecraftCommand {
 
   async onCommand(player, message) {
 
-    // First check for staff
-    const guild = await hypixel.getGuild("player", player, { noCaching: false });
-    if (!isStaff(player, guild)) {
-      this.send(`/msg ${player} ${messages.staffOnlyMessage}`);
-      return;
-    }
-
-    console.log(`[KILLCLIENT] Restart triggered by ${player}...`);
-
     try {
+      /** @type {import('hypixel-api-reborn').Guild['members']} */
+      const [uuid, guild] = await Promise.all([getUUID(player), hypixel.getGuild("player", bot.username, { noCaching: false })]);
+
+      // Staff-only check
+      if (!isStaff(uuid, guild)) {
+        return this.send(messages.staffOnlyMessage);
+      }
+
+      console.log(`[KILLCLIENT] Restart triggered by ${player}...`);
+      
       if (this.minecraft && this.minecraft.bridge) {
         const bridge = this.minecraft.bridge;
 
