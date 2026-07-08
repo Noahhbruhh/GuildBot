@@ -3,7 +3,6 @@ const { getUUID } = require("../../contracts/API/mowojangAPI.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 const messages = require("../../../messages.json");
-const config = require("../../../config.json");
 
 class KillClientCommand extends minecraftCommand {
   constructor(minecraft) {
@@ -17,8 +16,9 @@ class KillClientCommand extends minecraftCommand {
   async onCommand(player, message) {
 
     // First check for staff
-    if (!isStaff(player)) {
-      this.send(`/msg ${player} ${messages.StaffOnlyMessage}`);
+    const guild = await hypixel.getGuild("player", player, { noCaching: false });
+    if (!isStaff(player, guild)) {
+      this.send(`/msg ${player} ${messages.staffOnlyMessage}`);
       return;
     }
 
