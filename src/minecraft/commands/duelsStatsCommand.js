@@ -83,7 +83,7 @@ class DuelsStatsCommand extends minecraftCommand {
       },
       {
         name: "ratio",
-        description: "Keyword to look for RATIO stats instead of overall stats",
+        description: "Keyword to look for RATIO stats instead of overall stats (accepts 'ratios' or 'ratio')",
         required: false
       }
     ];
@@ -122,9 +122,10 @@ class DuelsStatsCommand extends minecraftCommand {
   
       const args = this.getArgs(message);
 
-      // find "ratio" exclusively
-      const isRatio = args.some(arg => arg.toLowerCase() === "ratio");
-      let remaining = isRatio ? args.filter(arg => arg.toLowerCase() !== "ratio") : args;
+      // find ratio keyword
+      const allowedRatioKeywords = ["ratio", "ratios"];
+      const isRatio = args.some(arg => allowedRatioKeywords.includes(arg.toLowerCase()));
+      let remaining = isRatio ? args.filter(arg => !allowedRatioKeywords.includes(arg.toLowerCase())) : args;
       
       // find anything from duelAliases exclusively
       const duelArg = remaining.find(arg => duelAliases[arg.toLowerCase()]);
