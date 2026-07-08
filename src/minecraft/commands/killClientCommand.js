@@ -15,6 +15,13 @@ class KillClientCommand extends minecraftCommand {
   }
 
   async onCommand(player, message) {
+
+    // First check for staff
+    if (!isStaff(player)) {
+      this.send(`/msg ${player} ${messages.StaffOnlyMessage}`);
+      return;
+    }
+
     console.log(`[KILLCLIENT] Restart triggered by ${player}...`);
 
     try {
