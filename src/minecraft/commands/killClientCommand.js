@@ -5,6 +5,7 @@ const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 const messages = require("../../../messages.json");
 
 class KillClientCommand extends minecraftCommand {
+  /** @param {import("minecraft-protocol").Client} minecraft */
   constructor(minecraft) {
     super(minecraft);
     this.name = "restart";
@@ -25,7 +26,7 @@ class KillClientCommand extends minecraftCommand {
       }
 
       console.log(`[KILLCLIENT] Restart triggered by ${player}...`);
-      
+
       if (this.minecraft && this.minecraft.bridge) {
         const bridge = this.minecraft.bridge;
 
