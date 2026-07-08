@@ -282,7 +282,7 @@ function titleCase(str) {
 
 function isStaff(uuid, guild) {
 
-  STAFF_RANKS = ["Staff", "Admin", "Guild Master"]
+  const STAFF_RANKS = ["Staff", "Admin", "Guild Master"]
   
   return Array.from(guild.members).some(
     member => (member.uuid.toLowerCase() === uuid.toLowerCase() && STAFF_RANKS.includes(member.rank))
