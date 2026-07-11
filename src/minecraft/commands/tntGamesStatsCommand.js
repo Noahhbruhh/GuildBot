@@ -54,11 +54,9 @@ class TNTGamesStatsCommand extends minecraftCommand {
         const gameArg = args.find(arg => Object.keys(gameAliases).includes(arg.toLowerCase()));
         if (!gameArg) {
             const gameAliasesString = Object.keys(gameAliases).join(", ");
-            return this.send(`[ERROR] Invalid game argument. Valid arguments are: ${gameAliasesString}.`);
+            return this.send(`[ERROR] Invalid gamemode. Did you give one? Valid arguments are: ${gameAliasesString}`);
         }
-
         const game = gameAliases[gameArg.toLowerCase()];
-
 
         // then look for a player name (any remaining argument)
         const targetPlayer = args.find(arg => !Object.keys(gameAliases).includes(arg.toLowerCase())) || player;
