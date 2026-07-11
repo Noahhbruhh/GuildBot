@@ -34,6 +34,7 @@ class TNTGamesStatsCommand extends minecraftCommand {
 
         const gameAliases = {
             "tntrun" : "tntrun",
+            "run" : "tntrun",
             "pvprun" : "pvprun",
             "pvp" : "pvprun",
             "tnttag" : "tnttag",
@@ -49,9 +50,14 @@ class TNTGamesStatsCommand extends minecraftCommand {
         
         // argument handling : remember order is dynamic
         const args = this.getArgs(message);
-        // first look for anything in gameAliases, default to tntrun
+        // first look for anything in gameAliases, if none, raise error and show game aliases
         const gameArg = args.find(arg => Object.keys(gameAliases).includes(arg.toLowerCase()));
-        const game = gameArg ? gameAliases[gameArg.toLowerCase()] : "tntrun";
+        if (!gameArg) {
+            const gameAliasesString = Object.keys(gameAliases).join(", ");
+            return this.send(`[ERROR] Invalid game argument. Valid arguments are: ${gameAliasesString}.`);
+        }
+
+        const game = gameAliases[gameArg.toLowerCase()];
 
 
         // then look for a player name (any remaining argument)
@@ -67,20 +73,20 @@ class TNTGamesStatsCommand extends minecraftCommand {
         const winstreak = stats.winstreak;
 
         if (game === "tntrun") { 
-            const { wins, deaths } = stats.tntrun;
-            this.send(`${hypixelPlayer.nickname}'s TNT Run: W ${wins} L ${deaths} WS ${winstreak}`);
+            const { wins, deaths, record } = stats.tntrun;
+            this.send(`${hypixelPlayer.nickname}'s TNT Run: W ${wins} L ${deaths} | Best time: ${record}s | WS ${winstreak}`);
         } else if (game === "pvprun") { 
-            const { kills, wins, deaths } = stats.pvprun;
-            this.send(`${hypixelPlayer.nickname}'s PvP Run: K ${kills} W ${wins} L ${deaths} WS ${winstreak}`);
+            const { kills, wins, deaths, record } = stats.pvprun;
+            this.send(`${hypixelPlayer.nickname}'s PvP Run: K ${kills} W ${wins} L ${deaths} Best time: ${record}s | WS ${winstreak}`);
         } else if (game === "tnttag") { 
             const { wins } = stats.tnttag;
             this.send(`${hypixelPlayer.nickname}'s TNT Tag: W ${wins} WS ${winstreak}`);
         } else if (game === "bowspleef") { 
             const { wins, deaths } = stats.bowspleef;
-            this.send(`${hypixelPlayer.nickname}'s Bow Spleef: W ${wins} L ${deaths} WS ${winstreak}`);
+            this.send(`${hypixelPlayer.nickname}'s Bow Spleef: W ${wins} L ${deaths} | WS ${winstreak}`);
         } else if (game === "wizards") { 
             const { wins, assists, KDRatio, deaths } = stats.wizards;
-            this.send(`${hypixelPlayer.nickname}'s Wizards: W ${wins} A ${assists} KDR ${KDRatio} D ${deaths}`);
+            this.send(`${hypixelPlayer.nickname}'s Wizards: W ${wins} A ${assists} KDR ${KDRatio} D ${deaths} | WS ${winstreak}`);
         }
        
     } catch (error) { 
@@ -90,5 +96,3 @@ class TNTGamesStatsCommand extends minecraftCommand {
 }
 
 module.exports = TNTGamesStatsCommand;
-
-// COMMAND : node scipts/commandHarness.js
