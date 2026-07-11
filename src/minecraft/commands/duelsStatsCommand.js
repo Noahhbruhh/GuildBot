@@ -98,6 +98,11 @@ class DuelsStatsCommand extends minecraftCommand {
     try {
       const duelAliases = {
         arena: "arena",
+        bedwars: "bedwars",
+        bw: "bedwars",
+        bedwarsrush: "bedwarsrush",
+        bwrush: "bedwarsrush",
+        bwr: "bedwarsrush",
         bridge: "bridge",
         b: "bridge",
         blitz: "blitz",
