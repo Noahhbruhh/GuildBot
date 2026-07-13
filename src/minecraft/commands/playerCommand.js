@@ -35,8 +35,12 @@ class PlayerCommand extends minecraftCommand {
       const uuid = await getUUID(player);
       const member = guild?.members.find(m => m.uuid === uuid);
 
-      const guildMessage = member 
-        ? `[${guild.name} ${member.rank} with ${member.weeklyExperience} GEXP] ` 
+      if (member === undefined) {
+        throw "[ERROR] Got guild from player, but not guild from member?"; // this won't ever happen
+      }
+
+      const guildMessage = guild 
+        ? `[${guild.name} ${member.rank} with ${formatNumber(member.weeklyExperience, 0)} GEXP] ` 
         : "";
 
       this.send(
