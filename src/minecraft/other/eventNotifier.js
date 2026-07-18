@@ -1,8 +1,9 @@
 const { getSkyblockCalendar } = require("../../../API/functions/getCalendar.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const { delay } = require("../../contracts/helperFunctions.js");
 const config = require("../../../config.json");
 const axios = require("axios");
+const messages = require("../../../messages.json");
 
 if (config.minecraft.skyblockEventsNotifications.enabled) {
   const { notifiers, customTime } = config.minecraft.skyblockEventsNotifications;
@@ -64,11 +65,7 @@ function getCustomTime(events, value) {
 
 // --- RANDOM MESSAGE EVERY X HOURS ---
 
-const randomMessages = [
-  "Don't forget to sign up for the ObamaGang tournament, check the discord for more info.",
-  "If you want to be in the ObamaGang Guild Montage, submit your clips in the discord."
-];
-
+const broadcastMessages = messages.broadcasts;
 const randomMessageInterval = 2 /* <- hours */       * 60 * 60 * 1000
 
 setInterval(async () => {
@@ -76,7 +73,7 @@ setInterval(async () => {
     const broadcastBot = new minecraftCommand(bot);
     broadcastBot.officer = false; // sends to GC natively
 
-    const randomText = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+    const randomText = broadcastMessages[Math.floor(Math.random() * broadcastMessages.length)];
 
     broadcastBot.send(`[BROADCAST] ${randomText}`);
 

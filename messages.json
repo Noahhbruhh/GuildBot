@@ -34,5 +34,8 @@
   "usefulCommandsMessage": "Try !duels, !player, !skyblock and !bedwars for various Hypixel stats for any player. To find new commands, try !randomcommand or !cmds.",
   "botInfoMessage": "@xbqst and @cherryrntz maintain our guild bot, which responds to any command sent in guild chat, discord or /w. (WIP not informative enough)",
   "skyblockMenuMessage": "Type !sb <command> to run a skyblock related command and !sb cmds to see a list of options.",
-  "staffOnlyMessage": "[ERROR] You do not have permission to run this command! If you believe this to be an error, try running the command from Minecraft chat."
+  "staffOnlyMessage": "[ERROR] You do not have permission to run this command! If you believe this to be an error, try running the command from Minecraft chat.",
+  "broadcasts" : [
+    
+  ]
 }
