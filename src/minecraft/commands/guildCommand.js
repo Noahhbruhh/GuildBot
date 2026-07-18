@@ -9,7 +9,7 @@ class GuildInformationCommand extends minecraftCommand {
 
     this.name = "guild";
     this.aliases = ["g"];
-    this.description = "View information of a guild";
+    this.description = "View information about a guild";
     this.options = [
       {
         name: "guild",
@@ -26,25 +26,21 @@ class GuildInformationCommand extends minecraftCommand {
   async onCommand(player, message) {
     try {
 
-      const args = this.getArgs(message.replace("_", " "));
+      const args = this.getArgs(message);
       let guild;
 
       // default to own guild
       if (args.length === 0) {
         guild = await hypixel.getGuild("player", player, {noCaching: false});
+      // otherwise get from argument
       } else {
-        const guildName = args
-          .map((arg) => titleCase(arg))
-          .join(" ");
-  
-        guild = await hypixel.getGuild("name", guildName, { noCaching: false });
-      }
-      if (!guild) {
-        return this.send(`Guild ${guildName} not found (use _ in place of spaces)`);
+        guild = await hypixel.getGuild("name", args.join(" "), {noCaching: false});
       }
 
+      const tagMessage = guild.tag ? `[${guild.tag}] ` : "";
+
       this.send(
-        `Guild ${guild.name} | Tag: [${guild.tag}] | Members: ${guild.members.length} | Level: ${guild.level} | Weekly GEXP: ${formatNumber(guild.totalWeeklyGexp)}`
+        `${tagMessage}${guild.name} | ${guild.members.length} members | LEVEL ${guild.level} | ${formatNumber(guild.totalWeeklyGexp)} Weekly GEXP`
       );
     } catch (error) {
       this.send(formatError(error));

@@ -32,6 +32,7 @@ class PlayerCommand extends minecraftCommand {
         guild: true
       });
 
+      const formattedRank = rank === "Default" ? "" : rank;
       const uuid = await getUUID(player);
       const member = guild?.members.find(m => m.uuid === uuid);
 
@@ -40,11 +41,13 @@ class PlayerCommand extends minecraftCommand {
       }
 
       const guildMessage = guild 
-        ? `[${guild.name} ${member.rank} with ${formatNumber(member.weeklyExperience, 0)} GEXP] ` 
+        ? `[${guild.name} [${member.rank}] with ${formatNumber(member.weeklyExperience, 0)} GEXP] ` 
         : "";
 
+      const giftMessage = giftsSent !== undefined && giftsSent !== 0 ? `| ${giftsSent} Gifts` : "";
+
       this.send(
-        `(${level}) ${nickname} ${guildMessage}| ${formatNumber(karma, 0)} Karma | ${formatNumber(achievementPoints, 0)} AP | ${giftsSent} Gifts`
+        `(${level}) [${formattedRank}] ${nickname} ${guildMessage}| ${formatNumber(karma, 0)} Karma | ${formatNumber(achievementPoints, 0)} AP ${giftMessage}`
       );
       
     } catch (error) {
