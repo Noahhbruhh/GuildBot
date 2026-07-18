@@ -36,6 +36,6 @@
   "skyblockMenuMessage": "Type !sb <command> to run a skyblock related command and !sb cmds to see a list of options.",
   "staffOnlyMessage": "[ERROR] You do not have permission to run this command! If you believe this to be an error, try running the command from Minecraft chat.",
   "broadcasts" : [
-    
+    "hi! we dont have any better broadcasts yet :/"
   ]
 }
