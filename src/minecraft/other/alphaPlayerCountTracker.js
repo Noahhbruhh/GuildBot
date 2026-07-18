@@ -23,7 +23,7 @@ async function checkAlphaPlayerCount() {
       const currentTime = Date.now();
 
       if (currentPlayerCount > 10 && lastPlayerCount <= 10 && currentTime - lastMessageTime >= MESSAGE_COOLDOWN) {
-        bot.chat(`/gc [ALPHA] Alpha Hypixel is open, current player count: ${currentPlayerCount}`);
+        bot.chat(`/gc [ALPHA] Alpha Hypixel is open with ${currentPlayerCount} players online!`);
         lastMessageTime = currentTime;
       }
 
