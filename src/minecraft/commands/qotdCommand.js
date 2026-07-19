@@ -1,5 +1,6 @@
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const { formatError } = require("../../contracts/helperFunctions.js");
+// @ts-ignore
 const { get } = require("axios");
 
 class QOTDCommand extends minecraftCommand {
