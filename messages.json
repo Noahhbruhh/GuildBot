@@ -36,6 +36,7 @@
   "skyblockMenuMessage": "Type !sb <command> to run a skyblock related command and !sb cmds to see a list of options.",
   "staffOnlyMessage": "[ERROR] You do not have permission to run this command! If you believe this to be an error, try running the command from Minecraft chat.",
   "broadcasts" : [
-    "hi! we dont have any better broadcasts yet :/"
-  ]
+    "Don't forget to join our guild discord! Do /g discord to receive the invite link."
+  ],
+  "inactivityInfoMessage": "We recognise that nobody can be active 24/7. If and when you take a break, please let us know in the #inactivity channel in our discord."
 }

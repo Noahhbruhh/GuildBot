@@ -10,7 +10,8 @@ const info_sections = {
   "ranks" : messages.rankHelpMessage,
   "help" : messages.helpMessage,
   "usefulcommands" : messages.usefulCommandsMessage,
-  "botinfo" : messages.botInfoMessage
+  "botinfo" : messages.botInfoMessage,
+  "inactivity" : messages.inactivityInfoMessage
 }
 
 class InfoCommand extends minecraftCommand {
