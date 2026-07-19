@@ -1,4 +1,4 @@
-const { formatNumber, formatError } = require("../../contracts/helperFunctions.js");
+const { formatError } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 

@@ -1,8 +1,5 @@
-const fs = require("fs");
-
-const { formatNumber, formatError, delay } = require("../../contracts/helperFunctions.js");
+const { formatError, delay } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
-const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 const messages = require("../../../messages.json");
 
 const skyblockCommands = [

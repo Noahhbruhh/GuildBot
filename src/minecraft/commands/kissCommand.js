@@ -1,11 +1,8 @@
-const { formatNumber, formatError } = require("../../contracts/helperFunctions.js");
+const { formatError } = require("../../contracts/helperFunctions.js");
 const { resolveUsernameOrUUID } = require("../../contracts/API/mowojangAPI.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
-const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
-const config = require("../../../config.json");
-// @ts-ignore
-const { get } = require("axios");
 
+/** @type {((p1: string, p2: string) => string)[]} */
 const kissMessages = [
   (p1, p2) => `${p1} has been kissed by ${p2} <3`,
   (p1, p2) => `${p2} gives ${p1} a warm kiss <3`,

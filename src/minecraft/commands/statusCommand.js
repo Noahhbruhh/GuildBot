@@ -1,5 +1,5 @@
-const { formatNumber, formatError } = require("../../contracts/helperFunctions.js");
-const { getUUID, getUsername } = require("../../contracts/API/mowojangAPI.js");
+const { formatError } = require("../../contracts/helperFunctions.js");
+const { getUUID } = require("../../contracts/API/mowojangAPI.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 const config = require("../../../config.json");

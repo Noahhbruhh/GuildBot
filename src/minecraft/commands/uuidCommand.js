@@ -1,10 +1,6 @@
-const { formatNumber, formatError } = require("../../contracts/helperFunctions.js");
+const { formatError } = require("../../contracts/helperFunctions.js");
 const { getUUID, resolveUsernameOrUUID } = require("../../contracts/API/mowojangAPI.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
-const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
-const config = require("../../../config.json");
-// @ts-ignore
-const { get } = require("axios");
 
 class UUIDCommand extends minecraftCommand {
   /** @param {import("minecraft-protocol").Client} minecraft */

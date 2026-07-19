@@ -1,8 +1,5 @@
-const fs = require("fs");
-
-const { formatNumber, formatError } = require("../../contracts/helperFunctions.js");
+const { formatError } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
-const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 
 class RandomCommandCommand extends minecraftCommand {
   /** @param {import("minecraft-protocol").Client} minecraft */

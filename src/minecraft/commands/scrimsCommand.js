@@ -1,9 +1,14 @@
-const { formatNumber, formatError } = require("../../contracts/helperFunctions.js");
+const { formatError } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 
 // @ts-ignore
 const { get } = require("axios");
 
+/**
+ * Aggregates the stats from an object of game types to a single object of totals.
+ * @param {Record<string, Record<string, number>>} obj - The object containing game type stats.
+ * @return {Record<string, number>} - The object containing the aggregated stats.
+ */
 function aggregateStats(obj) {
   const totals = {
       wins: 0,

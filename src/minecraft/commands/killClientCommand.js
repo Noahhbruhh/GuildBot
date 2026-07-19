@@ -1,4 +1,4 @@
-const { formatNumber, formatError, isStaff, delay } = require("../../contracts/helperFunctions.js");
+const { formatError, isStaff, delay } = require("../../contracts/helperFunctions.js");
 const { getUUID } = require("../../contracts/API/mowojangAPI.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
@@ -14,6 +14,10 @@ class KillClientCommand extends minecraftCommand {
     this.options = [];
   }
 
+  /**
+   * @param {string} player
+   * @param {string} message
+   * */
   async onCommand(player, message) {
 
     try {
@@ -60,8 +64,7 @@ class KillClientCommand extends minecraftCommand {
       process.exit(0);
 
     } catch (error) {
-      console.error("Couldn't kill client:", error);
-      process.exit(1);
+      this.send(formatError(error));
     }
   }
 }

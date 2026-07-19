@@ -1,6 +1,5 @@
-const { formatNumber, formatError } = require("../../contracts/helperFunctions.js");
+const { formatError } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
-const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 const { resolveUsernameOrUUID, getUUID } = require("../../contracts/API/mowojangAPI.js");
 
 const API_KEY = "6849d836-141f-6f99-ccef-f4e59127c737";
