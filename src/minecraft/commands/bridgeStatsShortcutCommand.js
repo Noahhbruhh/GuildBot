@@ -2,6 +2,7 @@ const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const DuelsStatsCommand = require("./duelsStatsCommand.js");
 
 class BridgeShortcutCommand extends minecraftCommand {
+  /** @param {import("minecraft-protocol").Client} minecraft */
   constructor(minecraft) {
     super(minecraft);
 
@@ -10,6 +11,10 @@ class BridgeShortcutCommand extends minecraftCommand {
     this.description = "Shortcut for !duels bridge <player>";
   }
 
+  /**
+   * @param {string} player
+   * @param {string} message
+   * */
   async onCommand(player, message) {
     message = message.trim();
     message = message.replace(/^(!|\/)?(bridge|b)\s*/i, "");
