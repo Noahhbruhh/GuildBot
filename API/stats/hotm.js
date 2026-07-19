@@ -32,7 +32,7 @@ function getHotm(profile) {
           total: (profile.mining_core.powder_spent_glacite ?? 0) + (profile.mining_core.powder_glacite ?? 0)
         }
       },
-      level: getLevelByXp(profile.mining_core.experience, { type: "hotm" }),
+      level: getLevelByXp(profile.mining_core.xp, { type: "hotm" }),
       // @ts-ignore
       ability: CONSTANTS.hotm.perks[profile.mining_core.selected_pickaxe_ability]?.name ?? "None"
     };

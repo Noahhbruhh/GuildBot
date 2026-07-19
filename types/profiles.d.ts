@@ -203,7 +203,7 @@ export type ProfilePets = {
 export type Mining = {
   nodes: Record<string, number>;
 
-  experience: number;
+  xp: number;
 
   greater_mines_last_access: number;
   last_reset: number;

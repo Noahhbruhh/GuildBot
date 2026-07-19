@@ -30,7 +30,7 @@ class HotmCommand extends minecraftCommand {
       player = args[0] || player;
 
       const { username, profile, profileData } = await getLatestProfile(player);
-      const rawXp = profile?.mining_core?.experience || 0;
+      const rawXp = profile?.mining_core?.xp || 0;
 
       if (!profile?.mining_core) {
         throw `${username} has never gone to Dwarven Mines on ${profileData.cute_name}.`;
