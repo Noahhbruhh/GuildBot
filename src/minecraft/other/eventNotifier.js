@@ -66,7 +66,7 @@ function getCustomTime(events, value) {
 // --- RANDOM MESSAGE EVERY X HOURS ---
 
 const broadcastMessages = messages.broadcasts;
-const randomMessageInterval = 2 /* <- hours */       * 60 * 60 * 1000
+const randomMessageInterval = config.other.broadcastInterval * 60 * 60 * 1000;
 
 setInterval(async () => {
   try {
