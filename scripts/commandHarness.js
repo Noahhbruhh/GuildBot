@@ -2,10 +2,16 @@
 const fs = require("fs");
 const path = require("path");
 const readline = require("readline");
+const { EventEmitter } = require("events");
 
 const projectRoot = path.resolve(__dirname, "..");
 const commandsDir = path.join(projectRoot, "src", "minecraft", "commands");
 const configPath = path.join(projectRoot, "config.json");
+
+global.bot = new EventEmitter();
+global.bot.username = "0bamaGang";
+global.bot._client = { chat: () => {} };
+global.bot.chat = async () => {};
 
 function ensureConfigFile() {
   if (fs.existsSync(configPath)) return;
@@ -50,7 +56,7 @@ function loadCommands() {
         });
       }
     } catch (error) {
-      console.warn(`Skipping ${file}: ${error.message}`);
+      console.warn(`Skipping ${file}:\n${error.stack}`);
     }
   }
 
