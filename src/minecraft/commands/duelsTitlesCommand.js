@@ -11,7 +11,7 @@ class DuelsTitlesCommand extends minecraftCommand {
 
     this.name = "titles";
     this.aliases = ["dueltitles"];
-    this.description = "Duel stats of specified user. Defaults to sender if no user is specified.";
+    this.description = `Top ${MAX_TITLES} duel titles of specified user. Defaults to sender if no user is specified.`;
     this.options = [
       {
         name: "username",
