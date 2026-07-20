@@ -54,15 +54,14 @@ class DuelsTitlesCommand extends minecraftCommand {
                 wins += v.wins ?? 0;
             }
 
-            let division = getDivision(wins, modeName);
-            if (division !== "Unranked") {
+            if (wins > 0) {
                 divisions[modeName] = { "division" : getDivision(wins, modeName), "wins" : wins };
             }
         }
 
         // output the top 5 divisions with most wins
         const topDivisions = Object.entries(divisions).sort((a, b) => b[1].wins - a[1].wins).slice(0, MAX_TITLES);
-        const topDivisionsString = topDivisions.map(d => `${titleCase(d[0])} ${d[1].division} (${d[1].wins} W)`).join(" | ");
+        const topDivisionsString = topDivisions.map(d => `${d[0].toUpperCase()} ${d[1].division} (${d[1].wins} W)`).join(" | ");
 
         this.send(`${hypixelPlayer.nickname}'s top ${MAX_TITLES} titles : ${topDivisionsString}`);
         
