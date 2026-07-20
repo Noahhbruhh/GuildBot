@@ -29,42 +29,50 @@ class DuelsTitlesCommand extends minecraftCommand {
     
     try {
   
-        const targetPlayer = this.getArgs(message)[0] ?? player;
-        const hypixelPlayer = await hypixel.getPlayer(targetPlayer); 
-        if (!hypixelPlayer) throw "Player not found.";
-        
-        if (!hypixelPlayer.stats?.duels) { 
-            throw `${hypixelPlayer.nickname} has never played duels.`; 
+      const targetPlayer = this.getArgs(message)[0] ?? player;
+      const hypixelPlayer = await hypixel.getPlayer(targetPlayer); 
+      if (!hypixelPlayer) throw "Player not found.";
+      
+      if (!hypixelPlayer.stats?.duels) { 
+        throw `${hypixelPlayer.nickname} has never played duels.`; 
+      }
+      
+      const duelsRoot = hypixelPlayer.stats.duels;
+
+      /** @type {Record<string, {division: string, wins: number}>} */
+      let divisions = {};
+
+      // iter through all values (duel gamemodes) in duelsRoot
+      for (const [modeName, modeStats] of Object.entries(duelsRoot)) {
+
+        // if mode stats isn't a dictionary, skip it
+        if (typeof modeStats !== "object") continue;
+
+        let wins = 0;
+
+        // if overall is included in the mode stats, that means there are submodes - sum them instead
+        if ("overall" in modeStats) {
+          for (const [k, v] of Object.entries(modeStats)) {
+            // deleted games are HERE vv
+            if (["overall", "2v2v2v2", "3v3v3v3", "ctf"].includes(k)) continue;
+            // deleted games are HERE ^^
+            wins += v.wins ?? 0;
+          }
+        } else {
+          wins = modeStats.wins ?? 0;
         }
-        
-        const duelsRoot = hypixelPlayer.stats.duels;
 
-        /** @type {Record<string, {division: string, wins: number}>} */
-        let divisions = {};
-
-        // iter through all values (duel gamemodes) in duelsRoot
-        for (const [modeName, modeStats] of Object.entries(duelsRoot)) {
-            let wins = 0;
-
-            // summing loop
-            for (const [k, v] of Object.entries(modeStats)) {
-                // deleted games are HERE vv
-                if (["overall", "2v2v2v2", "3v3v3v3", "ctf"].includes(k)) continue;
-                // deleted games are HERE ^^
-                wins += v.wins ?? 0;
-            }
-
-            if (wins > 0) {
-                divisions[modeName] = { "division" : getDivision(wins, modeName), "wins" : wins };
-            }
+        if (wins > 0) {
+          divisions[modeName] = { "division" : getDivision(wins, modeName), "wins" : wins };
         }
+      }
 
-        // output the top 5 divisions with most wins
-        const topDivisions = Object.entries(divisions).sort((a, b) => b[1].wins - a[1].wins).slice(0, MAX_TITLES);
-        const topDivisionsString = topDivisions.map(d => `${d[0].toUpperCase()} ${d[1].division} (${d[1].wins} W)`).join(" | ");
+      // output the top X divisions with most wins
+      const topDivisions = Object.entries(divisions).sort((a, b) => b[1].wins - a[1].wins).slice(0, MAX_TITLES);
+      const topDivisionsString = topDivisions.map(d => `${d[0].toUpperCase()} ${d[1].division} (${d[1].wins} W)`).join(" | ");
 
-        this.send(`${hypixelPlayer.nickname}'s top ${MAX_TITLES} titles : ${topDivisionsString}`);
-        
+      this.send(`${hypixelPlayer.nickname}'s top ${MAX_TITLES} titles : ${topDivisionsString}`);
+      
     } catch (error) { 
       this.send(formatError(error));
     } 
