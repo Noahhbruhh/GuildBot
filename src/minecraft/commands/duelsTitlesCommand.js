@@ -10,7 +10,7 @@ class DuelsTitlesCommand extends minecraftCommand {
     super(minecraft);
 
     this.name = "titles";
-    this.aliases = ["dueltitles"];
+    this.aliases = ["dueltitles", "divisions"];
     this.description = `Top ${MAX_TITLES} duel titles of specified user. Defaults to sender if no user is specified.`;
     this.options = [
       {
