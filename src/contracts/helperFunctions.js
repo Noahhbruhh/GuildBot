@@ -1,5 +1,5 @@
 const moment = require("moment");
-const fs = require("fs");
+const { Guild } = require("hypixel-api-reborn");
 
 /**
  * Replaces all ranks in a string with an empty string
@@ -280,6 +280,12 @@ function titleCase(str) {
 
 // everything past this is @cherryrntz
 
+/**
+ * 
+ * @param {string} uuid 
+ * @param {Guild} guild 
+ * @returns {boolean}
+ */
 function isStaff(uuid, guild) {
 
   const STAFF_RANKS = ["Staff", "Admin", "Guild Master"]
@@ -287,6 +293,63 @@ function isStaff(uuid, guild) {
   return Array.from(guild.members).some(
     member => (member.uuid.toLowerCase() === uuid.toLowerCase() && STAFF_RANKS.includes(member.rank))
   );
+}
+
+/*                                                 */
+/*    DIVISION CALCULATION CREDITS | by @.teun.    */
+/*                                                 */
+
+/**
+ * Tier boundaries. Subdivisions I–V are derived by splitting
+ * the range [start, next) into 5 equal parts.
+ * Reduced requirement gamemodes use double the input wins.
+ */
+const TIERS = [
+  { name: "Rookie",      start: 50,     next: 100    },
+  { name: "Iron",        start: 100,    next: 250    },
+  { name: "Gold",        start: 250,    next: 500    },
+  { name: "Diamond",     start: 500,    next: 1000   },
+  { name: "Master",      start: 1000,   next: 2000   },
+  { name: "Legend",      start: 2000,   next: 5000   },
+  { name: "Grandmaster", start: 5000,   next: 10000  },
+  { name: "Godlike",     start: 10000,  next: 25000  },
+  { name: "Celestial",   start: 25000,  next: 50000  },
+  { name: "Divine",      start: 50000,  next: 100000 },
+];
+
+/**
+ * Returns the division string for a given win count.
+ * @param {number} wins
+ * @param {string | undefined} gamemode - If undefined, we ask for the overall division
+ * @returns {string}
+*/
+function getDivision(wins, gamemode) {
+  const REDUCED_REQUIREMENT_GAMEMODES = ["bridge", "boxing", "megawalls", "nodebuff", "parkour"]
+
+  let w = wins;
+  if (gamemode === undefined) {
+    wins /= 2;
+  } else if (REDUCED_REQUIREMENT_GAMEMODES.includes(gamemode)) {
+    w *= 2;
+  }
+
+  // Ascended: 100000+ wins, one rank per 10000, up to rank 50
+  if (w >= 100000) {
+    const rank = Math.min(Math.floor((w - 100000) / 10000) + 1, 50);
+    return `Ascended ${rank}`;
+  }
+
+  // Walk tiers from highest to lowest
+  for (let i = TIERS.length - 1; i >= 0; i--) {
+    const { name, start, next } = TIERS[i];
+    if (w >= start) {
+      const step = (next - start) / 5;
+      const sub = Math.min(Math.floor((w - start) / step), 4);
+      return `${name} ${["I", "II", "III", "IV", "V"][sub]}`;
+    }
+  }
+
+  return "Unranked";
 }
 
 module.exports = {
@@ -303,4 +366,5 @@ module.exports = {
   delay,
   titleCase,
   isStaff,
+  getDivision
 };

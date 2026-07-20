@@ -1,61 +1,6 @@
-const { formatNumber, formatError } = require("../../contracts/helperFunctions.js");
+const { formatNumber, formatError, getDivision } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
-
-/*                                                 */
-/*    DIVISION CALCULATION CREDITS | by @.teun.    */
-/*                                                 */
-
-
-/**
- * Tier boundaries. Subdivisions I–V are derived by splitting
- * the range [start, next) into 5 equal parts.
- * Reduced requirement gamemodes use double the input wins.
- */
-const TIERS = [
-  { name: "Rookie",      start: 50,     next: 100    },
-  { name: "Iron",        start: 100,    next: 250    },
-  { name: "Gold",        start: 250,    next: 500    },
-  { name: "Diamond",     start: 500,    next: 1000   },
-  { name: "Master",      start: 1000,   next: 2000   },
-  { name: "Legend",      start: 2000,   next: 5000   },
-  { name: "Grandmaster", start: 5000,   next: 10000  },
-  { name: "Godlike",     start: 10000,  next: 25000  },
-  { name: "Celestial",   start: 25000,  next: 50000  },
-  { name: "Divine",      start: 50000,  next: 100000 },
-];
-
-const SUBDIVISION = ["I", "II", "III", "IV", "V"];
-
-const REDUCED_REQUIREMENT_GAMEMODES = ["bridge", "boxing", "megawalls", "nodebuff", "parkour"]
-
-/**
- * Returns the division string for a given win count.
- * @param {number} wins
- * @param {boolean} [hasReducedRequirements=false] - If true, effective wins are doubled.
- * @returns {string}
- */
-function getDivision(wins, hasReducedRequirements = false) {
-  const w = hasReducedRequirements ? wins * 2 : wins;
-
-  // Ascended: 100000+ wins, one rank per 10000, up to rank 50
-  if (w >= 100000) {
-    const rank = Math.min(Math.floor((w - 100000) / 10000) + 1, 50);
-    return `Ascended ${rank}`;
-  }
-
-  // Walk tiers from highest to lowest
-  for (let i = TIERS.length - 1; i >= 0; i--) {
-    const { name, start, next } = TIERS[i];
-    if (w >= start) {
-      const step = (next - start) / 5;
-      const sub = Math.min(Math.floor((w - start) / step), 4);
-      return `${name} ${SUBDIVISION[sub]}`;
-    }
-  }
-
-  return "Unranked";
-}
 
 class DuelsStatsCommand extends minecraftCommand {
   /** @param {import("minecraft-protocol").Client} minecraft */
@@ -96,6 +41,9 @@ class DuelsStatsCommand extends minecraftCommand {
   async onCommand(player, message) {
     
     try {
+      /**
+       * @type {Record<string, string>}
+       */
       const duelAliases = {
         arena: "arena",
         bedwars: "bedwars",
@@ -143,7 +91,6 @@ class DuelsStatsCommand extends minecraftCommand {
       if (duelArg) remaining = remaining.filter(arg => arg !== duelArg);
       
       const dummyPlayer = await hypixel.getPlayer(bot.username);
-      
       const validSubModes = Object.keys(dummyPlayer?.stats?.duels?.[duel] ?? {});
       
       // find anything from the sub-modes (if a duel mode exists)
@@ -170,7 +117,6 @@ class DuelsStatsCommand extends minecraftCommand {
       }
       
       const duelsRoot = hypixelPlayer.stats.duels;
-      const hasReducedReqs = REDUCED_REQUIREMENT_GAMEMODES.includes(duel);
       
       // init boooo
       let wins = 0;
@@ -181,7 +127,7 @@ class DuelsStatsCommand extends minecraftCommand {
       let prefixMode = "OVERALL";
       
       // no duel mode given...
-      if (!duel) {
+      if (duel === undefined) {
         // ...global overall stats
         wins = duelsRoot.wins ?? 0;
         losses = duelsRoot.losses ?? 0;
@@ -231,7 +177,7 @@ class DuelsStatsCommand extends minecraftCommand {
             wins += v.wins ?? 0;
             losses += v.losses ?? 0;
           }
-          wlRatio = losses > 0 ? (wins / losses).toFixed(2) : wins.toFixed(2);
+          wlRatio = losses > 0 ? parseFloat((wins / losses).toFixed(2)) : parseFloat(wins.toFixed(2));
         } 
           
         // no overall branch (meaning we are in the stats directory)...
@@ -252,7 +198,7 @@ class DuelsStatsCommand extends minecraftCommand {
         ? `[${prefixMode} ${duel.toUpperCase()}]` 
         : `[Duels]`;
       const divisionWins = !duel ? (wins / 2) : wins;
-      const division = getDivision(divisionWins, hasReducedReqs);
+      const division = getDivision(divisionWins, duel);
 
       // HERE we check for ratios and modify our output message accordingly,
       // because we now want the next wlr, the wins to the next wlr (and maybe +x.yz wlr to next?)
