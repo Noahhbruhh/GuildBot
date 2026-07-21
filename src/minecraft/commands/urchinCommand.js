@@ -2,8 +2,7 @@ const { formatError } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const { resolveUsernameOrUUID, getUUID } = require("../../contracts/API/mowojangAPI.js");
 
-const API_KEY = "CShseWgxZeMRRexpWPQ8n9AQJQmyWsC6sgzqagwSIn8" // cherryrntz's key! please dont steal it </3
-const SOURCES = "GAME,PARTY,PARTY_INVITES,CHAT,CHAT_MENTIONS,MANUAL,ME"
+const API_KEY = "4c3afa72-6a7f-4c6b-b03d-aa48f450e4ef" // cherryrntz's key! please dont steal it </3
 
 class UrchinCommand extends minecraftCommand {
   /** @param {import("minecraft-protocol").Client} minecraft */
@@ -43,7 +42,7 @@ class UrchinCommand extends minecraftCommand {
     
     try {
       const url = `https://api.urchin.gg/v3/player/tags?player=${encodeURIComponent(username)}&key=${API_KEY}`;
-      // const url = `https://urchin.ws/cubelify/?id=${uuid}&key=${API_KEY}&name=${encodeURIComponent(username)}&sources=${SOURCES}`
+      // const url = `https://api.urchin.gg/v3/cubelify?uuid=${uuid}&key=4c3afa72-6a7f-4c6b-b03d-aa48f450e4ef`;
 
       const res = await fetch(url);
       if (res.status === 404) {
@@ -57,7 +56,7 @@ class UrchinCommand extends minecraftCommand {
       }
 
       const data = await res.json();
-      const tags = data.tags;
+      const tags = /** @type {{tag_type: string, added_on: string, reason: string}[]} */ (data.tags);
 
       console.log(data);
 
@@ -68,11 +67,13 @@ class UrchinCommand extends minecraftCommand {
       
       let s = `${formatted_username} >> `;
       
-      tags.forEach(tag => {
+      tags.forEach((/** @type {{tag_type: string, added_on: string, reason: string}} */ tag) => {
         let ftag;
+
+        const daysAgo = Math.floor(Math.abs(Date.now() - new Date(tag.added_on).getTime()) / (1000 * 60 * 60 * 24));
         
         switch(tag.tag_type) {
-          case "sniper": ftag = `SNIPER confirmed ${Math.floor(Math.abs(new Date() - new Date(tag.added_on)) / (1000 * 60 * 60 * 24))} days ago`; break;
+          case "sniper": ftag = "SNIPER"; break;
           case "blatant_cheater": ftag = "BLATANT CHEATER"; break;
           case "closet_cheater": ftag = "CLOSET CHEATER"; break;
           case "confirmed_cheater": ftag = "CONFIRMED CHEATER"; break;
@@ -80,7 +81,7 @@ class UrchinCommand extends minecraftCommand {
           default: ftag = tag.tag_type; break;
         }
 
-        const reasontag = tag.reason.length > 0 ? `|| ${tag.reason} ||` : ""
+        const reasontag = tag.reason.length > 0 ? `| ${tag.reason} (added ${daysAgo} days ago) ` : ""
         
         s = s + `${ftag} ${reasontag}`;
       });
