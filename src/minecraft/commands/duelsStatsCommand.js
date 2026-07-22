@@ -9,7 +9,7 @@ class DuelsStatsCommand extends minecraftCommand {
 
     this.name = "duels";
     this.aliases = ["duel", "d"];
-    this.description = "Duel stats of specified user. Defaults to sender if no user is specified.";
+    this.description = "Duel stats of specified user or self.";
     this.options = [
       {
         name: "username",
@@ -28,7 +28,7 @@ class DuelsStatsCommand extends minecraftCommand {
       },
       {
         name: "ratio",
-        description: "Keyword to look for RATIO stats instead of overall stats (accepts 'ratios' or 'ratio')",
+        description: "Switch to ratio view",
         required: false
       }
     ];
