@@ -51,16 +51,16 @@ class helpCommand extends minecraftCommand {
       
       // build the base command info
       const aliasText = (cmd.aliases && cmd.aliases.length !== 0) ? cmd.aliases.join("/") : "No aliases";
-      let finalMessage = `${cmd.name} (${aliasText}) || ${cmd.description ?? "No description"}`;
+      let finalMessage = `${cmd.name} (${aliasText}) | ${cmd.description ?? "No description"}`;
 
       // append options if they exist
       if (cmd.options && cmd.options.length > 0) {
         let options_messages = [];
         for (const opt of cmd.options) {
-          options_messages.push(`<${opt.name}>: ${opt.description}${opt.required ? " (required)" : ""}`);
+          options_messages.push(`${opt.name}: ${opt.description}${opt.required ? " (required)" : ""}`);
         }
         
-        finalMessage += ` ➔ Options: ${options_messages.join(" || ")}`;
+        finalMessage += ` ➔ ${options_messages.join(" | ")}`;
       }
       
       this.send(finalMessage);
