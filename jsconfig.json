@@ -6,7 +6,8 @@
     "moduleResolution": "node",
     "target": "es2023",
     "module": "commonjs",
-    "strict": true
+    "strict": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["API/**/*", "types/**/*.d.ts", "src/minecraft/commands/*"],
   "globals": {
