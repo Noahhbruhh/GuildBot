@@ -205,13 +205,12 @@ class DuelsStatsCommand extends minecraftCommand {
       if (isRatio) {
         const nextWLR = Math.ceil(wlRatio);
         const difference = nextWLR - wlRatio;
-        const differenceText = difference > 0 ? `+${difference.toFixed(2)}` : `${difference.toFixed(2)}`;
 
         const nextWins = nextWLR * losses;    // WLR = wins / losses -> wins = WLR * losses
         const winIncrease = nextWins - wins;
         const pctWinIncrease = winIncrease / wins * 100;
 
-        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next WLR: ${nextWLR} (${differenceText}) | Wins at next WLR: ${nextWins} (+${winIncrease} / ${pctWinIncrease.toFixed(1)}%) | +${(1 / losses).toPrecision(3)} WLR per win`)
+        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next WLR: ${nextWLR} (+${difference.toFixed(2)}) | Wins at next WLR: ${nextWins} (+${winIncrease} / ${pctWinIncrease.toFixed(1)}%) | +${(1 / losses).toPrecision(3)} WLR per win`)
       } // return gateway! we dont need to `} else {`
       
       const winstreakText = bestWinstreak === 0 
