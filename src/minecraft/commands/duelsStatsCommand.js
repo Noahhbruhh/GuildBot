@@ -211,7 +211,7 @@ class DuelsStatsCommand extends minecraftCommand {
         const winIncrease = nextWins - wins;
         const pctWinIncrease = winIncrease / wins * 100;
 
-        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname} Next WLR : ${nextWLR} (${differenceText}) | Wins at next WLR : ${nextWins} (+${winIncrease} / ${pctWinIncrease.toFixed(1)}%) | +${(1 / losses).toPrecision(2)} WLR per win`)
+        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next WLR: ${nextWLR} (${differenceText}) | Wins at next WLR: ${nextWins} (+${winIncrease} / ${pctWinIncrease.toFixed(1)}%) | +${(1 / losses).toPrecision(3)} WLR per win`)
       } // return gateway! we dont need to `} else {`
       
       const winstreakText = bestWinstreak === 0 
