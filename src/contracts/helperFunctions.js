@@ -295,14 +295,30 @@ function isStaff(uuid, guild) {
   );
 }
 
+/**
+ * https://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
+ * @param {number} num 
+ * @returns {string}
+ */
+function romanise(num) {
+  const lookup = { L:50, XL:40, X:10, IX:9, V:5, IV:4, I:1 };
+  let roman = '';
+  for (const key of Object.keys(lookup)) {
+    while (num >= lookup[key]) {
+      roman += key;
+      num -= lookup[key];
+    }
+  }
+  return roman;
+}
+
 /*                                                 */
 /*    DIVISION CALCULATION CREDITS | by @.teun.    */
 /*                                                 */
 
 /**
  * Tier boundaries. Subdivisions I–V are derived by splitting
- * the range [start, next) into 5 equal parts.
- * Reduced requirement gamemodes use double the input wins.
+ * the range [start, next] into 5 equal parts.
  */
 const TIERS = [
   { name: "Rookie",      start: 50,     next: 100    },
@@ -320,7 +336,7 @@ const TIERS = [
 /**
  * Returns the division string for a given win count.
  * @param {number} wins
- * @param {string | undefined} gamemode - If undefined, we ask for the overall division
+ * @param {string | undefined} gamemode - If undefined, we're asking for the overall division
  * @returns {string}
 */
 function getDivision(wins, gamemode) {
@@ -336,7 +352,7 @@ function getDivision(wins, gamemode) {
   // Ascended: 100000+ wins, one rank per 10000, up to rank 50
   if (w >= 100000) {
     const rank = Math.min(Math.floor((w - 100000) / 10000) + 1, 50);
-    return `Ascended ${rank}`;
+    return `ASCENDED ${romanise(rank)}`;
   }
 
   // Walk tiers from highest to lowest
@@ -345,7 +361,7 @@ function getDivision(wins, gamemode) {
     if (w >= start) {
       const step = (next - start) / 5;
       const sub = Math.min(Math.floor((w - start) / step), 4);
-      return `${name} ${["I", "II", "III", "IV", "V"][sub]}`;
+      return `${name} ${romanise(sub + 1)}`;
     }
   }
 
