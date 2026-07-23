@@ -46,22 +46,32 @@ class skyblockMenuCommand extends minecraftCommand {
     }
     
     const command_name = args[0].toLowerCase();
+    const requestedCommandName = command_name;
 
-    if (!skyblockCommands.includes(command_name) && args[0] !== "cmds") {
-      return this.send(`Couldn't find command "${command_name}": not in the commands list. Run !sb cmds to see the list.`)
-    }
-    
     let cmd;
     
     try {
       for (const c of this.all_commands) {
-        if (c.name === command_name || (c.aliases && c.aliases.includes(command_name))) {
+        const normalizedName = c.name?.toLowerCase();
+        const normalizedAliases = (c.aliases || []).map((alias) => alias.toLowerCase());
+
+        if (
+          normalizedName === requestedCommandName ||
+          normalizedAliases.includes(requestedCommandName)
+        ) {
           cmd = c;
           break;
         }
       }
 
-      if (!cmd) {
+      const isListedCommand = skyblockCommands.includes(command_name);
+      const isKnownCommand = cmd !== undefined;
+
+      if (!isKnownCommand && !isListedCommand && args[0] !== "cmds") {
+        return this.send(`Couldn't find command "${command_name}": not in the commands list. Run !sb cmds to see the list.`)
+      }
+
+      if (!cmd && !isListedCommand) {
         return this.send(`Couldn't find command "${command_name}" but it was in the list!`);
       }
       
