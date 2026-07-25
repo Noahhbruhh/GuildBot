@@ -125,6 +125,7 @@ class DuelsStatsCommand extends minecraftCommand {
       let bestWinstreak = 0;
       let wlRatio = 0;
       let prefixMode = "OVERALL";
+      let duelData;
       
       // no duel mode given...
       if (duel === undefined) {
@@ -138,7 +139,7 @@ class DuelsStatsCommand extends minecraftCommand {
       // duel mode given...
       } else {
         // ...specific mode stats
-        let duelData = duelsRoot[duel] ?? {};
+        duelData = duelsRoot[duel] ?? {};
         const hasOverallBranch = "overall" in duelData;
 
         // if a team mode is given...
@@ -197,7 +198,10 @@ class DuelsStatsCommand extends minecraftCommand {
       const prefix = duel 
         ? `[${prefixMode} ${duel.toUpperCase()}]` 
         : `[Duels]`;
-      const divisionWins = !duel ? (wins / 2) : wins;
+      const divisionWins = !duel 
+        ? (wins / 2) 
+        : (teamMode && duelData?.overall?.wins != null ? duelData.overall.wins : wins);
+      // Use the duel mode overall win total for team submodes so division reflects total bridge wins, not 2v2-only wins.
       const division = getDivision(divisionWins, duel);
 
       // HERE we check for ratios and modify our output message accordingly,
