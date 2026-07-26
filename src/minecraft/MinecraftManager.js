@@ -1,5 +1,5 @@
 const CommunicationBridge = require("../contracts/CommunicationBridge.js");
-const { replaceVariables } = require("../contracts/helperFunctions.js");
+const { replaceVariables, delay, generateID } = require("../contracts/helperFunctions.js");
 const StateHandler = require("./handlers/StateHandler.js");
 const ErrorHandler = require("./handlers/ErrorHandler.js");
 const ChatHandler = require("./handlers/ChatHandler.js");
@@ -87,12 +87,26 @@ class MinecraftManager extends CommunicationBridge {
     }
 
     let successfullySent = false;
+    let retries = 0;
+    const maxRetries = 3;
+
     const messageListener = (receivedMessage) => {
       receivedMessage = receivedMessage.toString();
 
       if (receivedMessage.trim().includes(message.trim()) && (this.chatHandler.isGuildMessage(receivedMessage) || this.chatHandler.isOfficerMessage(receivedMessage))) {
         global.bot.removeListener("message", messageListener);
         successfullySent = true;
+      }
+
+      // retry if the message is a duplicate
+      if (receivedMessage.includes("You cannot say the same message twice!") && !receivedMessage.includes(":")) {
+        retries += 1;
+        if (retries <= maxRetries) {
+          const randomId = generateID(config.minecraft.bot.messageRepeatBypassLength);
+          const maxLength = 256 - randomId.length - 3; // -3 for space and hyphen
+          message = `${message.substring(0, maxLength)} - ${randomId}`;
+          setTimeout(() => this.bot.chat(`${chat} ${message}`), 150);
+        }
       }
     };
 
