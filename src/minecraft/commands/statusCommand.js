@@ -52,11 +52,17 @@ class StatusCommand extends minecraftCommand {
         const session = data.session;
       
         if (session.online === false) {
-          this.send(`${hypixelPlayer.nickname} is either offline or has API settings off.`);
+          const lastLogoutText = hypixelPlayer.lastLogoutTimestamp ? `Last logout: ${new Date(hypixelPlayer.lastLogoutTimestamp).toLocaleString()}` : "Logout API OFF";
+          const lastPlayedText = hypixelPlayer.recentlyPlayedGame ? `| Last played ${hypixelPlayer.recentlyPlayedGame.name}` : "";
+          this.send(`${hypixelPlayer.nickname} appears to be offline. ${lastLogoutText} ${lastPlayedText}`);
           return;
         }
+
+        console.log(hypixelPlayer);
+
+        const mapText = session.map ? ` on ${session.map}` : "";
       
-        this.send(`${hypixelPlayer.nickname} is playing ${session.gameType} | Mode: ${session.mode} | Map: ${session.map ?? "None"}`);
+        this.send(`${hypixelPlayer.nickname} is playing ${session.gameType} : ${session.mode.replace("_", " ")}${mapText}`);
       
       } catch (error) {
         if (error.response && error.response.status === 429) {
