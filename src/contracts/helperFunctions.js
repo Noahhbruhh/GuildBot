@@ -1,5 +1,7 @@
 const moment = require("moment");
 const { Guild } = require("hypixel-api-reborn");
+// @ts-ignore
+const { get } = require("axios");
 
 /**
  * Replaces all ranks in a string with an empty string
@@ -293,6 +295,15 @@ function isStaff(uuid, guild) {
   return Array.from(guild.members).some(
     member => (member.uuid.toLowerCase() === uuid.toLowerCase() && STAFF_RANKS.includes(member.rank))
   );
+}
+
+/**
+ * Gets the properly capitalised name of a Minecraft player. Equivalent to retrieving the name through ResolveUsernameOrUUID in mowojangAPI.js.
+ * @param {string} mcname 
+ */
+async function prettyName(mcname) {
+  const { data } = await get(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+  return data.name;
 }
 
 /**
