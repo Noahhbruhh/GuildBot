@@ -28,7 +28,7 @@ class PlayerCommand extends minecraftCommand {
     try {
       
       player = this.getArgs(message)[0] || player;
-      const { achievementPoints, nickname, rank, karma, level, guild, giftsSent } = await hypixel.getPlayer(player, {
+      const { achievementPoints, nickname, rank, karma, level, guild, giftsSent, firstLoginTimestamp } = await hypixel.getPlayer(player, {
         guild: true
       });
 
@@ -40,10 +40,10 @@ class PlayerCommand extends minecraftCommand {
         ? `[${guild.name} [${member.rank}] with ${formatNumber(member.weeklyExperience, 0)} GEXP] ` 
         : "";
 
-      const giftMessage = [0, undefined, null].includes(giftsSent) ? "" : `| ${giftsSent} Gifts`;
+      const giftMessage = [0, undefined, null].includes(giftsSent) ? "" : `| ${giftsSent} Gifts `;
 
       this.send(
-        `(${level}) [${formattedRank}] ${nickname} ${guildMessage}| ${formatNumber(karma, 0)} Karma | ${formatNumber(achievementPoints, 0)} AP ${giftMessage}`
+        `(${level}) [${formattedRank}] ${nickname} ${guildMessage}| ${formatNumber(karma, 0)} Karma | ${formatNumber(achievementPoints, 0)} AP ${giftMessage}| First Login: ${new Date(firstLoginTimestamp).toLocaleString()}`
       );
       
     } catch (error) {
