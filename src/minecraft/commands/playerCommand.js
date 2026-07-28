@@ -36,11 +36,7 @@ class PlayerCommand extends minecraftCommand {
       const uuid = await getUUID(player);
       const member = guild?.members.find(m => m.uuid === uuid);
 
-      if (member === undefined) {
-        throw "[ERROR] Got guild from player, but not guild from member?"; // this won't ever happen
-      }
-
-      const guildMessage = guild 
+      const guildMessage = (guild && member) // error resolving - it isn't necessary to check for guild and member since they're codependent
         ? `[${guild.name} [${member.rank}] with ${formatNumber(member.weeklyExperience, 0)} GEXP] ` 
         : "";
 
