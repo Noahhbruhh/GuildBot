@@ -21,11 +21,11 @@ class KillClientCommand extends minecraftCommand {
   async onCommand(player, message) {
 
     try {
-      /** @type {import('hypixel-api-reborn').Guild['members']} */
+      /** @type {[string, import('hypixel-api-reborn').Guild]} */
       const [uuid, guild] = await Promise.all([getUUID(player), hypixel.getGuild("player", bot.username, { noCaching: false })]);
 
-      // Staff-only check
-      if (!isStaff(uuid, guild)) {
+      // Staff-only check / officer chat check
+      if (!isStaff(uuid, guild) && !this.officer) {
         return this.send(messages.staffOnlyMessage);
       }
 
