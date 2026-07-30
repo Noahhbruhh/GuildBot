@@ -14,7 +14,7 @@
   "offlineInvite": "{username} was offline invited to the guild!",
   "guildMuteMessage": "Guild Chat has been muted for {time}!",
   "guildUnmuteMessage": "Guild Chat has been unmuted!",
-  "guildJoinMessage": "Welcome <username> to the Obamagang guild! Please run !imnew to get started with using our stats bot.",
+  "guildJoinMessage": "Welcome {username} to the Obamagang guild! Please run !imnew to get started with using our stats bot.",
   "userMuteMessage": "{username} has been muted for {time}!",
   "userUnmuteMessage": "{username} has been unmuted!",
   "setrankFailMessage": "{username} not found.",
@@ -35,8 +35,11 @@
   "botInfoMessage": "@xbqst and @cherryrntz maintain our guild bot, which responds to any command sent in guild chat, discord or /w. (WIP not informative enough)",
   "skyblockMenuMessage": "Type !sb <command> to run a skyblock related command and !sb cmds to see a list of options.",
   "staffOnlyMessage": "[ERROR] You do not have permission to run this command! If you believe this to be an error, try running the command from Minecraft chat.",
+  "inactivityInfoMessage": "We recognise that nobody can be active 24/7. If and when you take a break, please let us know in the #inactivity channel in our discord.",
   "broadcasts" : [
-    "Don't forget to join our guild discord! Do /g discord to receive the invite link."
-  ],
-  "inactivityInfoMessage": "We recognise that nobody can be active 24/7. If and when you take a break, please let us know in the #inactivity channel in our discord."
+    "Don't forget to join our guild discord! Do /g discord to receive the invite link.",
+    "Need to familiarise yourself with our bot? Use !help, !cmds, or !randomcommand.",
+    "Have any feedback or an idea for a new feature? Ping or message @cherryrntz on discord.",
+    "Don't forget to learn about our guild! !info to get started."
+  ]
 }
