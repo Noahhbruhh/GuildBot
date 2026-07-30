@@ -146,8 +146,8 @@ class StateHandler extends eventHandler {
       const username = this.getUsernameFromEventMessage(message);
       setTimeout(() => this.tryToUpdateUser(username), 15000);
 
-      await delay(1000);
-      bot.chat(`/gc ${replaceVariables(messages.guildJoinMessage.replace("<username>", username), { prefix: config.minecraft.bot.prefix })} | by @cherryrntz, @duckysolucky, @xbqst`);
+      await delay(3000);
+      bot.chat(`/gc ${replaceVariables(messages.guildJoinMessage.replace("{username}", username), { prefix: config.minecraft.bot.prefix })} | by @cherryrntz, @duckysolucky, @xbqst`);
 
       const broadcastMessage = {
         message: replaceVariables(messages.joinMessage, { username }),
