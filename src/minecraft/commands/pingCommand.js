@@ -12,7 +12,7 @@ class PingCommand extends minecraftCommand {
 
     this.name = "ping";
     this.aliases = ["ms"];
-    this.description = `Check a provided user's ping history (${POLL_PERIOD} days) through the Aurora API.`;
+    this.description = `Check a provided user's ping history (${POLL_PERIOD} days) through the Aurora API. Note that Aurora's polling interval is *highly inconsistent*.`;
     this.options = [
       {
         name: "username",
@@ -41,14 +41,17 @@ class PingCommand extends minecraftCommand {
 
       if (!res.ok) {
         throw `Aurora / Bordic API error: ${res.status}`
-        return;
       }
 
       const data = (await res.json()).data;
 
-      // Get ping history over the last POLL_PERIOD days
-      const recentData = data.slice(-POLL_PERIOD);
+      // descending sort data by timestamp
+      data.sort((a, b) => b.timestamp - a.timestamp);
 
+      // get ping history over the last POLL_PERIOD days
+      const recentData = data.slice(0, POLL_PERIOD);
+
+      // calculate average
       const overallData = recentData.reduce((acc, datum, _, arr) => {
         acc.min = Math.min(acc.min, datum.min);
         acc.max = Math.max(acc.max, datum.max);
@@ -58,7 +61,10 @@ class PingCommand extends minecraftCommand {
         
       }, { min: 9999, avg: 0, max: 0 });
 
-      this.send(`${formattedUsername}'s ping  : ${Math.round(overallData.min)}ms - avg ${Math.round(overallData.avg)}ms - ${Math.round(overallData.max)}ms`);
+      const earlyDay = recentData[0].day;
+      const lastDay = recentData[recentData.length - 1].day;
+
+      this.send(`${formattedUsername}'s ping history: ${Math.round(overallData.min)}ms - avg ${Math.round(overallData.avg)}ms - ${Math.round(overallData.max)}ms | ${POLL_PERIOD} polls between ${earlyDay} and ${lastDay}`);
       
     } catch (error) { 
       this.send(formatError(error)); 
