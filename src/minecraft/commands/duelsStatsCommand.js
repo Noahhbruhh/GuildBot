@@ -124,7 +124,7 @@ class DuelsStatsCommand extends minecraftCommand {
       let winstreak = 0;
       let bestWinstreak = 0;
       let wlRatio = 0;
-      let prefixMode = "OVERALL";
+      let prefixMode = "MAIN";
       let duelData;
       
       // no duel mode given...
@@ -158,7 +158,7 @@ class DuelsStatsCommand extends minecraftCommand {
           winstreak = teamData.winstreak ?? 0;
           bestWinstreak = teamData.bestWinstreak ?? 0;
           wlRatio = teamData.WLRatio ?? 0;
-          prefixMode = teamMode.toLowerCase() === "legacy" ? "LEGACY + OVERALL" : teamMode.toUpperCase();
+          prefixMode = teamMode.toLowerCase() === "legacy" ? "TOTAL" : teamMode.toUpperCase();
         }
 
         // if not, overall branch found...
@@ -222,7 +222,7 @@ class DuelsStatsCommand extends minecraftCommand {
         const currentTier = TIERS.find(t => t.name.toLowerCase() === titleName);
         const actualDivisionWins = divisionWins;
 
-        if (!currentTier) { return this.send("[ERROR] Couldn't find your current division?"); }
+        if (!currentTier) { return this.send("[ERROR] Couldn't find your current division?"); } // just error resolving!
 
         let scaledDivisionWins = actualDivisionWins;
         if (duel === undefined) {
@@ -248,14 +248,14 @@ class DuelsStatsCommand extends minecraftCommand {
 
         const nextDivision = getDivision(nextRankupWins, duel);
         
-        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next division: ${nextDivision} | Wins at next division: ${nextRankupWins} (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
+        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next division: ${nextDivision} | Wins at next: ${nextRankupWins} (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
       }
       
       const winstreakText = bestWinstreak === 0 
         ? "WS OFF" 
-        : `CWS ${winstreak} BWS ${bestWinstreak}`;
+        : `WS ${winstreak} BWS ${bestWinstreak}`;
       
-      return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname} W ${formatNumber(wins)} L ${formatNumber(losses)} WLR ${wlRatio} | ${winstreakText}`); 
+      return this.send(`${prefix} ${division} ${hypixelPlayer.nickname} W ${formatNumber(wins)} L ${formatNumber(losses)} WLR ${wlRatio} | ${winstreakText}`); 
        
     } catch (error) { 
       this.send(formatError(error));
