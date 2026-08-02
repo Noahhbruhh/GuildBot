@@ -199,7 +199,7 @@ class DuelsStatsCommand extends minecraftCommand {
         ? `[${prefixMode} ${duel.toUpperCase()}]` 
         : `[Duels]`;
       const divisionWins = !duel 
-        ? (wins / 2)
+        ? wins
         : (teamMode && duelData?.overall?.wins != null ? duelData.overall.wins : wins);
       // use the overall win total for team submodes so division reflects total wins, not mode-only wins
       const division = getDivision(divisionWins, duel);
@@ -218,32 +218,37 @@ class DuelsStatsCommand extends minecraftCommand {
 
       // rankup check
       if (isRankup) {
-        const titleName = division.split(" ")[0];
-        const currentTier = TIERS.find(t => t.name === titleName);
-        let adjustedDivisionWins = divisionWins;
+        const titleName = division.split(" ")[0].toLowerCase();
+        const currentTier = TIERS.find(t => t.name.toLowerCase() === titleName);
+        const actualDivisionWins = divisionWins;
 
-        if (!currentTier) { return this.send("[ERROR] Couldn't find your current division?"); } // just error resolving!
+        if (!currentTier) { return this.send("[ERROR] Couldn't find your current division?"); }
 
-        // half for reduced requirement gamemodes
-        if (duel && REDUCED_REQUIREMENT_GAMEMODES.includes(duel)) { adjustedDivisionWins *= 2; }
+        let scaledDivisionWins = actualDivisionWins;
+        if (duel === undefined) {
+          scaledDivisionWins /= 2;
+        } else if (REDUCED_REQUIREMENT_GAMEMODES.includes(duel)) {
+          scaledDivisionWins *= 2;
+        }
 
-        let { start, step } = currentTier;
-        const sub = Math.floor((adjustedDivisionWins - start) / step);
-
-        console.log(`Current division: ${division} | Wins: ${divisionWins} | Start: ${start} | Step: ${step} | Sub: ${sub} | Duel: ${duel} | Team mode: ${teamMode}`);
+        const { start, step } = currentTier;
+        const sub = Math.floor((scaledDivisionWins - start) / step);
 
         let nextRankupWins = start + (sub + 1) * step;
-        // half for reduced requirement gamemodes
-        if (duel && REDUCED_REQUIREMENT_GAMEMODES.includes(duel)) {
+        if (duel === undefined) {
+          nextRankupWins *= 2;
+        } else if (REDUCED_REQUIREMENT_GAMEMODES.includes(duel)) {
           nextRankupWins /= 2;
         }
 
-        const nextRankupDiff = nextRankupWins - divisionWins;
-        const nextRankupPct = (nextRankupDiff / divisionWins * 100).toFixed(1);
+        const nextRankupDiff = nextRankupWins - actualDivisionWins;
+        const nextRankupPct = actualDivisionWins > 0
+          ? (nextRankupDiff / actualDivisionWins * 100).toFixed(1)
+          : "N/A";
 
         const nextDivision = getDivision(nextRankupWins, duel);
         
-        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next division: ${nextDivision} | Wins at next division: ${nextRankupWins} (+${nextRankupDiff} / ${nextRankupPct}%)`);
+        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next division: ${nextDivision} | Wins at next division: ${nextRankupWins} (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
       }
       
       const winstreakText = bestWinstreak === 0 
