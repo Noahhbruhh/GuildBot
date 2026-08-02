@@ -354,18 +354,17 @@ const REDUCED_REQUIREMENT_GAMEMODES = ["bridge", "boxing", "megawalls", "nodebuf
  * @returns {string}
 */
 function getDivision(wins, gamemode) {
-  let w = wins;
-  if (gamemode === undefined) {
+  if (!gamemode || gamemode === undefined) {
     wins /= 2;
   } else if (REDUCED_REQUIREMENT_GAMEMODES.includes(gamemode)) {
-    w *= 2;
+    wins *= 2;
   }
 
   // Walk tiers from highest to lowest
   for (let i = TIERS.length - 1; i >= 0; i--) {
     const { name, start, step } = TIERS[i];
-    if (w >= start) {
-      const sub = Math.floor((w - start) / step);
+    if (wins >= start) {
+      const sub = Math.floor((wins - start) / step);
       const roman = romanise(sub + 1);
 
       if (roman === "I") { return `${name}`; } // no need to append "I" to the end of a division name
