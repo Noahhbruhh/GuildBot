@@ -32,7 +32,7 @@ class PlayerCommand extends minecraftCommand {
         guild: true
       });
 
-      const formattedRank = rank === "Default" ? "" : rank;
+      const rankText = rank === "Default" ? "" : `[${rank}] `;
       const uuid = await getUUID(player);
       const member = guild?.members.find(m => m.uuid === uuid);
 
@@ -43,7 +43,7 @@ class PlayerCommand extends minecraftCommand {
       const giftMessage = [0, undefined, null].includes(giftsSent) ? "" : `| ${giftsSent} Gifts `;
 
       this.send(
-        `(${level}) [${formattedRank}] ${nickname} ${guildMessage}| ${formatNumber(karma, 0)} Karma | ${formatNumber(achievementPoints, 0)} AP ${giftMessage}| First Login: ${new Date(firstLoginTimestamp).toLocaleString()}`
+        `(${level}) ${rankText}${nickname} ${guildMessage}| ${formatNumber(karma, 0)} Karma | ${formatNumber(achievementPoints, 0)} AP ${giftMessage}| First Login: ${new Date(firstLoginTimestamp).toLocaleString()}`
       );
       
     } catch (error) {
