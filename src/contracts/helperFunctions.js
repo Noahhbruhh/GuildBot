@@ -325,24 +325,27 @@ function romanise(num) {
 
 /*                                                 */
 /*    DIVISION CALCULATION CREDITS | by @.teun.    */
-/*                                                 */
+/*              (i made some changes)              */
 
 /**
  * Tier boundaries. Subdivisions I–V are derived by splitting
  * the range [start, next] into 5 equal parts.
  */
 const TIERS = [
-  { name: "Rookie",      start: 50,     next: 100    },
-  { name: "Iron",        start: 100,    next: 250    },
-  { name: "Gold",        start: 250,    next: 500    },
-  { name: "Diamond",     start: 500,    next: 1000   },
-  { name: "Master",      start: 1000,   next: 2000   },
-  { name: "Legend",      start: 2000,   next: 5000   },
-  { name: "Grandmaster", start: 5000,   next: 10000  },
-  { name: "Godlike",     start: 10000,  next: 25000  },
-  { name: "Celestial",   start: 25000,  next: 50000  },
-  { name: "Divine",      start: 50000,  next: 100000 },
+  { name: "Unranked",    start: 0,      step: 50    },
+  { name: "Rookie",      start: 50,     step: 10    },
+  { name: "Iron",        start: 100,    step: 30    },
+  { name: "Gold",        start: 250,    step: 50    },
+  { name: "Diamond",     start: 500,    step: 100   },
+  { name: "Master",      start: 1000,   step: 200   },
+  { name: "Legend",      start: 2000,   step: 500   },
+  { name: "Grandmaster", start: 5000,   step: 1000  },
+  { name: "Godlike",     start: 10000,  step: 2500  },
+  { name: "CELESTIAL",   start: 25000,  step: 5000  },
+  { name: "DIVINE",      start: 50000,  step: 10000 },
+  { name: "ASCENDED",    start: 100000, step: 10000 },
 ];
+const REDUCED_REQUIREMENT_GAMEMODES = ["bridge", "boxing", "megawalls", "nodebuff", "parkour"]
 
 /**
  * Returns the division string for a given win count.
@@ -351,8 +354,6 @@ const TIERS = [
  * @returns {string}
 */
 function getDivision(wins, gamemode) {
-  const REDUCED_REQUIREMENT_GAMEMODES = ["bridge", "boxing", "megawalls", "nodebuff", "parkour"]
-
   let w = wins;
   if (gamemode === undefined) {
     wins /= 2;
@@ -360,19 +361,15 @@ function getDivision(wins, gamemode) {
     w *= 2;
   }
 
-  // Ascended: 100000+ wins, one rank per 10000, up to rank 50
-  if (w >= 100000) {
-    const rank = Math.min(Math.floor((w - 100000) / 10000) + 1, 50);
-    return `ASCENDED ${romanise(rank)}`;
-  }
-
   // Walk tiers from highest to lowest
   for (let i = TIERS.length - 1; i >= 0; i--) {
-    const { name, start, next } = TIERS[i];
+    const { name, start, step } = TIERS[i];
     if (w >= start) {
-      const step = (next - start) / 5;
-      const sub = Math.min(Math.floor((w - start) / step), 4);
-      return `${name} ${romanise(sub + 1)}`;
+      const sub = Math.floor((w - start) / step);
+      const roman = romanise(sub + 1);
+
+      if (roman === "I") { return `${name}`; } // no need to append "I" to the end of a division name
+      return `${name} ${roman}`;
     }
   }
 
@@ -394,5 +391,7 @@ module.exports = {
   titleCase,
   isStaff,
   getDivision,
-  TIERS
+  TIERS,
+  REDUCED_REQUIREMENT_GAMEMODES,
+  prettyName
 };
