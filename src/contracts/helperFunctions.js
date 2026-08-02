@@ -393,5 +393,6 @@ module.exports = {
   delay,
   titleCase,
   isStaff,
-  getDivision
+  getDivision,
+  TIERS
 };
