@@ -213,7 +213,7 @@ class DuelsStatsCommand extends minecraftCommand {
         const winIncrease = nextWins - wins;
         const pctWinIncrease = winIncrease / wins * 100;
 
-        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next WLR: ${nextWLR} (+${difference.toFixed(2)}) | Wins at next WLR: ${nextWins} (+${winIncrease} / ${pctWinIncrease.toFixed(1)}%) | +${(1 / losses).toPrecision(3)} WLR per win`)
+        return this.send(`${prefix} ${division} ${hypixelPlayer.nickname}'s next WLR: ${nextWLR} (+${difference.toFixed(2)}) | Wins at next WLR: ${nextWins} (+${winIncrease} / ${pctWinIncrease.toFixed(1)}%) | +${(1 / losses).toPrecision(3)} WLR per win`)
       } // return gateway! we dont need to `} else {`
 
       // rankup check
@@ -248,7 +248,7 @@ class DuelsStatsCommand extends minecraftCommand {
 
         const nextDivision = getDivision(nextRankupWins, duel);
         
-        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next division: ${nextDivision} | Wins at next: ${nextRankupWins} (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
+        return this.send(`${division} ${hypixelPlayer.nickname}'s next division: ${nextDivision} | Wins at next: ${nextRankupWins} (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
       }
       
       const winstreakText = bestWinstreak === 0 
