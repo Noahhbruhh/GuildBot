@@ -121,6 +121,8 @@ async function main() {
     terminal: true
   });
 
+  let activeCommand = Promise.resolve();
+
   rl.setPrompt("command> ");
   printHelp(commands);
 
@@ -144,18 +146,22 @@ async function main() {
       return;
     }
 
-    try {
-      await runCommand(command, raw);
-    } catch (error) {
-      console.error(`Command failed: ${error.message}`);
-    }
+    activeCommand = (async () => {
+      try {
+        await runCommand(command, raw);
+      } catch (error) {
+        console.error(`Command failed: ${error.message}`);
+      }
 
-    rl.prompt();
+      rl.prompt();
+    })();
   });
 
   rl.on("close", () => {
-    console.log("Goodbye.");
-    process.exit(0);
+    activeCommand.finally(() => {
+      console.log("Goodbye.");
+      process.exit(0);
+    });
   });
 
   rl.prompt();
