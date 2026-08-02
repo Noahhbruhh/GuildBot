@@ -1,4 +1,4 @@
-const { formatNumber, formatError, getDivision } = require("../../contracts/helperFunctions.js");
+const { formatNumber, formatError, getDivision, TIERS, REDUCED_REQUIREMENT_GAMEMODES } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 
@@ -27,8 +27,8 @@ class DuelsStatsCommand extends minecraftCommand {
         required: false
       },
       {
-        name: "ratio",
-        description: "Switch to ratio view",
+        name: "type",
+        description: "Switch to ratio or rankup view",
         required: false
       }
     ];
@@ -78,10 +78,10 @@ class DuelsStatsCommand extends minecraftCommand {
   
       const args = this.getArgs(message);
 
-      // find ratio keyword
-      const allowedRatioKeywords = ["ratio", "ratios"];
-      const isRatio = args.some(arg => allowedRatioKeywords.includes(arg.toLowerCase()));
-      let remaining = isRatio ? args.filter(arg => !allowedRatioKeywords.includes(arg.toLowerCase())) : args;
+      // find type keyword ("ratio" or "rankup") if it exists
+      const isRatio = args.some(arg => arg.toLowerCase() === "ratio");
+      const isRankup = args.some(arg => arg.toLowerCase() === "rankup");
+      let remaining = (isRatio || isRankup) ? args.filter(arg => !["ratio", "rankup"].includes(arg.toLowerCase())) : args;
       
       // find anything from duelAliases exclusively
       const duelArg = remaining.find(arg => duelAliases[arg.toLowerCase()]);
@@ -95,7 +95,7 @@ class DuelsStatsCommand extends minecraftCommand {
       
       // find anything from the sub-modes (if a duel mode exists)
       const typeArg = duel ? remaining.find(arg => validSubModes.includes(arg.toLowerCase()) || arg.toLowerCase() === "legacy") : null;
-      const teamMode = typeArg || undefined;
+      const teamMode = isRankup ? "legacy" : typeArg || undefined; // force legacy if rankup (we need )
       
       // filter out the duel type argument if it was found
       if (typeArg) remaining = remaining.filter(arg => arg !== typeArg);
@@ -199,13 +199,12 @@ class DuelsStatsCommand extends minecraftCommand {
         ? `[${prefixMode} ${duel.toUpperCase()}]` 
         : `[Duels]`;
       const divisionWins = !duel 
-        ? (wins / 2) 
+        ? (wins / 2)
         : (teamMode && duelData?.overall?.wins != null ? duelData.overall.wins : wins);
-      // Use the duel mode overall win total for team submodes so division reflects total bridge wins, not 2v2-only wins.
+      // use the overall win total for team submodes so division reflects total wins, not mode-only wins
       const division = getDivision(divisionWins, duel);
 
-      // HERE we check for ratios and modify our output message accordingly,
-      // because we now want the next wlr, the wins to the next wlr (and maybe +x.yz wlr to next?)
+      // ratio check
       if (isRatio) {
         const nextWLR = Math.ceil(wlRatio);
         const difference = nextWLR - wlRatio;
@@ -216,6 +215,36 @@ class DuelsStatsCommand extends minecraftCommand {
 
         return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next WLR: ${nextWLR} (+${difference.toFixed(2)}) | Wins at next WLR: ${nextWins} (+${winIncrease} / ${pctWinIncrease.toFixed(1)}%) | +${(1 / losses).toPrecision(3)} WLR per win`)
       } // return gateway! we dont need to `} else {`
+
+      // rankup check
+      if (isRankup) {
+        const titleName = division.split(" ")[0];
+        const currentTier = TIERS.find(t => t.name === titleName);
+        let adjustedDivisionWins = divisionWins;
+
+        if (!currentTier) { return this.send("[ERROR] Couldn't find your current division?"); } // just error resolving!
+
+        // half for reduced requirement gamemodes
+        if (duel && REDUCED_REQUIREMENT_GAMEMODES.includes(duel)) { adjustedDivisionWins *= 2; }
+
+        let { start, step } = currentTier;
+        const sub = Math.floor((adjustedDivisionWins - start) / step);
+
+        console.log(`Current division: ${division} | Wins: ${divisionWins} | Start: ${start} | Step: ${step} | Sub: ${sub} | Duel: ${duel} | Team mode: ${teamMode}`);
+
+        let nextRankupWins = start + (sub + 1) * step;
+        // half for reduced requirement gamemodes
+        if (duel && REDUCED_REQUIREMENT_GAMEMODES.includes(duel)) {
+          nextRankupWins /= 2;
+        }
+
+        const nextRankupDiff = nextRankupWins - divisionWins;
+        const nextRankupPct = (nextRankupDiff / divisionWins * 100).toFixed(1);
+
+        const nextDivision = getDivision(nextRankupWins, duel);
+        
+        return this.send(`${prefix} [${division}] ${hypixelPlayer.nickname}'s next division: ${nextDivision} | Wins at next division: ${nextRankupWins} (+${nextRankupDiff} / ${nextRankupPct}%)`);
+      }
       
       const winstreakText = bestWinstreak === 0 
         ? "WS OFF" 
