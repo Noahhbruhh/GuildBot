@@ -61,125 +61,123 @@ class DiscordManager extends CommunicationBridge {
 
   async getWebhook(discord, type) {
     const channel = await this.stateHandler.getChannel(type);
+    if (!channel) return undefined;
+
     try {
-      const webhooks = await channel.fetchWebhooks();
+      let webhooks = await channel.fetchWebhooks();
 
       if (webhooks.size === 0) {
-        channel.createWebhook({
+        // AWAIT the webhook creation before fetching again
+        await channel.createWebhook({
           name: "Hypixel Chat Bridge",
           avatar: "https://imgur.com/tgwQJTX.png"
         });
 
-        await this.getWebhook(discord, type);
+        webhooks = await channel.fetchWebhooks();
       }
 
       return webhooks.first();
     } catch (error) {
-      console.log(error);
-      channel.send({
-        embeds: [new ErrorEmbed("An error occurred while trying to fetch the webhooks. Please make sure the bot has the `MANAGE_WEBHOOKS` permission.")]
-      });
+      console.error("Webhook Error:", error);
+      if (channel.isTextBased()) {
+        channel.send({
+          embeds: [new ErrorEmbed("An error occurred while trying to fetch webhooks. Please ensure the bot has `MANAGE_WEBHOOKS` permission.")]
+        }).catch(() => {});
+      }
+      return undefined;
     }
   }
 
   async onBroadcast({ fullMessage, chat, chatType, username, rank, guildRank, message, color = 1752220 }) {
-    if ((chat === undefined && chatType !== "debugChannel") || ((username === undefined || message === undefined) && chat !== "debugChannel")) {
-      return;
-    }
+    try {
+      if ((chat === undefined && chatType !== "debugChannel") || ((username === undefined || message === undefined) && chat !== "debugChannel")) {
+        return;
+      }
 
-    const mode = chat === "debugChannel" ? config.discord.channels.debugChannelMessageMode.toLowerCase() : config.discord.other.messageMode.toLowerCase();
-    message = ["text"].includes(mode) ? fullMessage : message;
-    if (message !== undefined && chat !== "debugChannel") {
-      console.broadcast(`${username} [${guildRank.replace(/§[0-9a-fk-or]/g, "").replace(/^\[|\]$/g, "")}]: ${message}`, `Discord`);
-    }
+      const mode = chat === "debugChannel" ? config.discord.channels.debugChannelMessageMode.toLowerCase() : config.discord.other.messageMode.toLowerCase();
+      message = ["text"].includes(mode) ? fullMessage : message;
+      if (message !== undefined && chat !== "debugChannel") {
+        console.broadcast(`${username} [${guildRank.replace(/§[0-9a-fk-or]/g, "").replace(/^\[|\]$/g, "")}]: ${message}`, `Discord`);
+      }
 
-    if (mode === "minecraft") {
-      message = replaceVariables(config.discord.other.messageFormat, { chatType, username, rank, guildRank, message });
-    }
+      if (mode === "minecraft") {
+        message = replaceVariables(config.discord.other.messageFormat, { chatType, username, rank, guildRank, message });
+      }
 
-    const channel = await this.stateHandler.getChannel(chat || "Guild");
-    if (channel === undefined) {
-      console.error(`Channel ${chat.replace(/§[0-9a-fk-or]/g, "").trim()} not found!`);
-      return;
-    }
+      const channel = await this.stateHandler.getChannel(chat || "Guild");
+      if (channel === undefined) {
+        console.error(`Channel ${chat ? chat.replace(/§[0-9a-fk-or]/g, "").trim() : "Guild"} not found!`);
+        return;
+      }
 
-    switch (mode) {
-      case "bot":
-        await channel.send({
-          embeds: [
-            {
-              description: message,
-              color: this.hexToDec(color),
-              timestamp: new Date(),
-              footer: {
-                text: guildRank
-              },
-              author: {
-                name: username,
-                icon_url: `https://www.mc-heads.net/avatar/${username}`
+      switch (mode) {
+        case "bot":
+          await channel.send({
+            embeds: [
+              {
+                description: message,
+                color: this.hexToDec(color),
+                timestamp: new Date(),
+                footer: { text: guildRank },
+                author: {
+                  name: username,
+                  icon_url: `https://www.mc-heads.net/avatar/${username}`
+                }
               }
-            }
-          ]
-        });
+            ]
+          });
 
-        if (message.includes("https://")) {
-          const links = message.match(/https?:\/\/[^\s]+/g).join("\n");
+          if (message.includes("https://")) {
+            const links = message.match(/https?:\/\/[^\s]+/g).join("\n");
+            await channel.send(links);
+          }
+          break;
 
-          channel.send(links);
-        }
+        case "webhook":
+          message = this.cleanMessage(message);
+          if (message.length === 0) return;
 
-        break;
+          const webhook = await this.getWebhook(this.app.discord, chatType || "Guild");
+          if (!webhook) {
+            console.error("Failed to retrieve or create Discord webhook.");
+            return;
+          }
 
-      case "webhook":
-        message = this.cleanMessage(message);
-        if (message.length === 0) {
-          return;
-        }
+          // AWAIT webhook execution to catch rate-limits properly
+          await webhook.send({
+            content: message,
+            username: username,
+            avatarURL: `https://www.mc-heads.net/avatar/${username}`
+          });
+          break;
 
-        this.app.discord.webhook = await this.getWebhook(this.app.discord, chatType);
-        if (this.app.discord.webhook === undefined) {
-          return;
-        }
+        case "minecraft":
+          if (fullMessage.length === 0) return;
 
-        this.app.discord.webhook.send({
-          content: message,
-          username: username,
-          avatarURL: `https://www.mc-heads.net/avatar/${username}`
-        });
-        break;
+          const imageBuffer = await messageToImage(message, username);
+          await channel.send({
+            files: [
+              new AttachmentBuilder(imageBuffer, { name: `${username}.png` })
+            ]
+          });
 
-      case "minecraft":
-        if (fullMessage.length === 0) {
-          return;
-        }
+          if (message.includes("https://")) {
+            const links = message.match(/https?:\/\/[^\s]+/g).join("\n");
+            await channel.send(links);
+          }
+          break;
 
-        await channel.send({
-          files: [
-            new AttachmentBuilder(await messageToImage(message, username), {
-              name: `${username}.png`
-            })
-          ]
-        });
+        case "text":
+          if (message.trim().length === 0) return;
 
-        if (message.includes("https://")) {
-          const links = message.match(/https?:\/\/[^\s]+/g).join("\n");
+          await channel.send({ content: message });
+          break;
 
-          channel.send(links);
-        }
-        break;
-
-      case "text":
-        if (message.trim().length === 0) {
-          return;
-        }
-
-        await channel.send({
-          content: message
-        });
-        break;
-
-      default:
-        throw new Error("Invalid message mode: must be bot, webhook or minecraft");
+        default:
+          throw new Error("Invalid message mode: must be bot, webhook, minecraft, or text");
+      }
+    } catch (error) {
+      console.error("Error during onBroadcast:", error);
     }
   }
 
