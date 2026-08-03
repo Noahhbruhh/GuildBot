@@ -302,9 +302,27 @@ function isStaff(uuid, guild) {
  * @param {string} mcname 
  */
 async function prettyName(mcname) {
-  const { data } = await get(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+  const { data } = await get(`https://api.mojang.com/users/profiles/minecraft/${mcname}`);
   return data.name;
 }
+
+/**
+ * @param {number} gexp
+ * Scales GEXP according to Hypixel's daily limit:
+ * <200,000 GEXP : 100%
+ * 200,000 - 250,000 GEXP : 10%
+ * >250,000 GEXP : 3%
+ */
+function scaledGEXP(gexp) {
+  if (gexp <= 200000) {
+    return gexp;
+  } else if (gexp <= 250000) {
+    return 200000 + (gexp - 200000) * 0.1;
+  } else {
+    return 200000 + 50000 * 0.1 + (gexp - 250000) * 0.03;
+  }
+}
+
 
 /**
  * https://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
@@ -392,5 +410,6 @@ module.exports = {
   getDivision,
   TIERS,
   REDUCED_REQUIREMENT_GAMEMODES,
-  prettyName
+  prettyName,
+  scaledGEXP
 };
