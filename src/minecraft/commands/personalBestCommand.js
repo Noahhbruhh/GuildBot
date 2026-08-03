@@ -1,7 +1,6 @@
 const { getLatestProfile } = require("../../../API/functions/getLatestProfile.js");
 const { getPersonalBest } = require("../../../API/stats/dungeonsPersonalBest.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
-const prettyms = require("pretty-ms");
 
 class PersonalBestCommand extends minecraftCommand {
   /** @param {import("minecraft-protocol").Client} minecraft */
@@ -31,6 +30,8 @@ class PersonalBestCommand extends minecraftCommand {
    * */
   async onCommand(player, message) {
     // CREDITS: by @dallincotton06 (https://github.com/dallincotton06)
+    const { default: prettyms } = await import('pretty-ms');
+
     const args = this.getArgs(message);
     player = args[0] || player;
 
