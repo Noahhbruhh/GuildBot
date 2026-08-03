@@ -1,6 +1,7 @@
 const { getLatestProfile } = require("../../../API/functions/getLatestProfile.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const { formatNumber } = require("../../contracts/helperFunctions.js");
+// @ts-ignore
 const { ProfileNetworthCalculator } = require("skyhelper-networth");
 
 class NetWorthCommand extends minecraftCommand {
@@ -32,9 +33,9 @@ class NetWorthCommand extends minecraftCommand {
       const { username, profile, museum, profileData } = await getLatestProfile(player, { museum: true });
       const bankingBalance = profileData.banking?.balance ?? 0;
 
-      const networthManager = new ProfileNetworthCalculator(profile, museum, bankingBalance);
-      const networthData = await networthManager.getNetworth({ onlyNetworth: true });
-      const nonCosmeticNetworthData = await networthManager.getNonCosmeticNetworth({ onlyNetworth: true });
+      const calculator = new ProfileNetworthCalculator(profile, museum, bankingBalance);
+      
+      const networthData = await calculator.getNetworth({ onlyNetworth: false });
 
       if (networthData.noInventory === true) {
         return this.send(`${username} has an Inventory API off!`);
@@ -42,8 +43,10 @@ class NetWorthCommand extends minecraftCommand {
 
       const networth = formatNumber(networthData.networth);
       const unsoulboundNetworth = formatNumber(networthData.unsoulboundNetworth);
-      const nonCosmeticNetworth = formatNumber(nonCosmeticNetworthData.networth);
-      const nonCosmeticUnsoulboundNetworth = formatNumber(nonCosmeticNetworthData.unsoulboundNetworth);
+      
+      const cosmeticTotal = networthData.types?.cosmetics?.total ?? 0;
+      const nonCosmeticNetworth = formatNumber(networthData.networth - cosmeticTotal);
+      const nonCosmeticUnsoulboundNetworth = formatNumber(networthData.unsoulboundNetworth - cosmeticTotal);
 
       const purse = formatNumber(networthData.purse);
       const bank = profileData.banking?.balance ? formatNumber(profileData.banking.balance) : "N/A";
