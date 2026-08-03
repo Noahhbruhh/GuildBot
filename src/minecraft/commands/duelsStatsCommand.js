@@ -2,6 +2,72 @@ const { formatNumber, formatError, getDivision, TIERS, REDUCED_REQUIREMENT_GAMEM
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 
+/**
+ * @type {Record<string, string[]>}
+ */
+const TEAM_MODES = {
+  "uhc": [
+    "deathmatch",
+    "doubles",
+    "fours",
+    "solo"
+  ],
+  "skywars": [
+    "doubles",
+    "solo"
+  ],
+  "megawalls": [
+    "doubles",
+    "solo"
+  ],
+  "op": [
+    "doubles",
+    "solo"
+  ],
+  "bridge": [
+    "2v2v2v2",
+    "3v3v3v3",
+    "ctf",
+    "doubles",
+    "fours",
+    "solo",
+    "threes"
+  ]
+}
+
+/**
+ * @type {Record<string, string>}
+ */
+const DUEL_ALIASES = {
+  arena: "arena",
+  bedwars: "bedwars",
+  bw: "bedwars",
+  bedwarsrush: "bedwarsrush",
+  bwrush: "bedwarsrush",
+  bwr: "bedwarsrush",
+  bridge: "bridge",
+  b: "bridge",
+  blitz: "blitz",
+  bow: "bow",
+  bowspleef: "bowspleef",
+  boxing: "boxing",
+  classic: "classic",
+  combo: "combo",
+  megawalls: "megawalls",
+  nb: "nodebuff",
+  nodebuff: "nodebuff",
+  op: "op",
+  parkour: "parkour",
+  quakecraft: "quakecraft",
+  quake: "quakecraft",
+  qc: "quakecraft",
+  skywars: "skywars",
+  sumo: "sumo",
+  sw: "skywars",
+  uhc: "uhc",
+};
+
+
 class DuelsStatsCommand extends minecraftCommand {
   /** @param {import("minecraft-protocol").Client} minecraft */
   constructor(minecraft) {
@@ -41,38 +107,6 @@ class DuelsStatsCommand extends minecraftCommand {
   async onCommand(player, message) {
     
     try {
-      /**
-       * @type {Record<string, string>}
-       */
-      const duelAliases = {
-        arena: "arena",
-        bedwars: "bedwars",
-        bw: "bedwars",
-        bedwarsrush: "bedwarsrush",
-        bwrush: "bedwarsrush",
-        bwr: "bedwarsrush",
-        bridge: "bridge",
-        b: "bridge",
-        blitz: "blitz",
-        bow: "bow",
-        bowspleef: "bowspleef",
-        boxing: "boxing",
-        classic: "classic",
-        combo: "combo",
-        megawalls: "megawalls",
-        nb: "nodebuff",
-        nodebuff: "nodebuff",
-        op: "op",
-        parkour: "parkour",
-        quakecraft: "quakecraft",
-        quake: "quakecraft",
-        qc: "quakecraft",
-        skywars: "skywars",
-        sumo: "sumo",
-        sw: "skywars",
-        uhc: "uhc",
-      };
-
       // argument bullshit </3
       //
   
@@ -81,42 +115,39 @@ class DuelsStatsCommand extends minecraftCommand {
       // find type keyword ("ratio" or "rankup") if it exists
       const isRatio = args.some(arg => arg.toLowerCase() === "ratio");
       const isRankup = args.some(arg => arg.toLowerCase() === "rankup");
-      let remaining = (isRatio || isRankup) ? args.filter(arg => !["ratio", "rankup"].includes(arg.toLowerCase())) : args;
       
-      // find anything from duelAliases exclusively
-      const duelArg = remaining.find(arg => duelAliases[arg.toLowerCase()]);
-      const duel = duelArg ? duelAliases[duelArg.toLowerCase()] : undefined;
+      // filter out ratio and rankup keywords
+      let remaining = args.filter(arg => !["ratio", "rankup"].includes(arg.toLowerCase()));
+      
+      // find anything from duel aliases exclusively
+      const duelArg = remaining.find(arg => DUEL_ALIASES[arg.toLowerCase()]);
+      const duel = duelArg ? DUEL_ALIASES[duelArg.toLowerCase()] : undefined;
       
       // filter out the mode argument from the pool if it was found
       if (duelArg) remaining = remaining.filter(arg => arg !== duelArg);
       
-      const dummyPlayer = await hypixel.getPlayer(bot.username);
-      const validSubModes = Object.keys(dummyPlayer?.stats?.duels?.[duel] ?? {});
-      
       // find anything from the sub-modes (if a duel mode exists)
-      const typeArg = duel ? remaining.find(arg => validSubModes.includes(arg.toLowerCase()) || arg.toLowerCase() === "legacy") : null;
-      const teamMode = isRankup ? "legacy" : typeArg || undefined; // force legacy if rankup (we need )
+      const validSubModes = duel ? TEAM_MODES[duel] ?? [] : [];
+      const typeArg = duel ? remaining.find(arg => validSubModes.includes(arg.toLowerCase())) : null;
+      const teamMode = typeArg || undefined;
       
       // filter out the duel type argument if it was found
       if (typeArg) remaining = remaining.filter(arg => arg !== typeArg);
       
       // get player argument from whatever's left! and breathe
       const targetPlayer = remaining[0] ?? player;
-
+      const hypixelPlayer = await hypixel.getPlayer(targetPlayer); 
+      if (!hypixelPlayer) throw "Player not found.";
+      
       //
       // argument bullshit end <3
 
       // get hypixel player and duel stats
       //
-
-      const hypixelPlayer = await hypixel.getPlayer(targetPlayer); 
-      if (!hypixelPlayer) throw "Player not found.";
-      
-      if (!hypixelPlayer.stats?.duels) { 
+      const duelsRoot = hypixelPlayer.stats?.duels;
+      if (!duelsRoot) { 
         throw `${hypixelPlayer.nickname} has never played duels.`; 
       }
-      
-      const duelsRoot = hypixelPlayer.stats.duels;
       
       // init boooo
       let wins = 0;
@@ -127,9 +158,9 @@ class DuelsStatsCommand extends minecraftCommand {
       let prefixMode = "MAIN";
       let duelData;
       
-      // no duel mode given...
+      // if no duel mode is given...
       if (duel === undefined) {
-        // ...global overall stats
+        // ...use global overall stats
         wins = duelsRoot.wins ?? 0;
         losses = duelsRoot.losses ?? 0;
         winstreak = duelsRoot.winstreak ?? 0;
@@ -140,40 +171,38 @@ class DuelsStatsCommand extends minecraftCommand {
       } else {
         // ...specific mode stats
         duelData = duelsRoot[duel] ?? {};
-        const hasOverallBranch = "overall" in duelData;
 
         // if a team mode is given...
         if (teamMode) {
-          // ...specific team mode branch
-          const selectedMode = teamMode.toLowerCase() === "legacy" ? "overall" : teamMode;
+          // ...get stats from the specific team mode branch
           
-          if (!(selectedMode in duelData)) {
-            const validTeams = Object.keys(duelData).join(", ");
-            return this.send(`[ERROR] "${teamMode}" is not a valid mode for that duel. Options: ${validTeams}`);
+          if (!(teamMode in duelData)) {
+            return this.send(`[ERROR] "${teamMode}" is not a valid mode for that duel. Options: ${validSubModes.join(", ")}`);
           }
       
-          const teamData = duelData[selectedMode] ?? {};
+          const teamData = duelData[teamMode] ?? {};
           wins = teamData.wins ?? 0;
           losses = teamData.losses ?? 0;
           winstreak = teamData.winstreak ?? 0;
           bestWinstreak = teamData.bestWinstreak ?? 0;
           wlRatio = teamData.WLRatio ?? 0;
-          prefixMode = teamMode.toLowerCase() === "legacy" ? "TOTAL" : teamMode.toUpperCase();
+          prefixMode = teamMode.toUpperCase();
         }
 
-        // if not, overall branch found...
-        else if (hasOverallBranch) {
-          // ...sum stats from all branches except overall
-          // (since hypixel's "overall") ignores modes like 3s and 4s
+        // if not, check if there are any team modes...
+        else if (TEAM_MODES[duel] && TEAM_MODES[duel].length > 0 && !teamMode) {
+          // ...and if so, sum the stats from those instead
+          // hypixel no longer ignores stats from 3s and 4s so we dont actually need to do this...
+          // but i'm keeping it just in case
           
           // sum mode branches (ignoring deleted games; might need to update if i miss any !!)
-          winstreak = duelData.overall?.winstreak ?? 0;
-          bestWinstreak = duelData.overall?.bestWinstreak ?? 0;
+          winstreak = duelData.winstreak ?? 0;
+          bestWinstreak = duelData.bestWinstreak ?? 0;
 
           // summing loop
           for (const [k, v] of Object.entries(duelData)) {
             // deleted games are HERE vv
-            if (["overall", "2v2v2v2", "3v3v3v3", "ctf"].includes(k)) continue;
+            if (["2v2v2v2", "3v3v3v3", "ctf"].includes(k)) continue;
             // deleted games are HERE ^^
             wins += v.wins ?? 0;
             losses += v.losses ?? 0;
@@ -181,9 +210,9 @@ class DuelsStatsCommand extends minecraftCommand {
           wlRatio = losses > 0 ? parseFloat((wins / losses).toFixed(2)) : parseFloat(wins.toFixed(2));
         } 
           
-        // no overall branch (meaning we are in the stats directory)...
+        // if there aren't any team modes (meaning we are in the stats directory)...
         else {
-          // ...stats straight from the root
+          // ...get stats straight from the root
           wins = duelData?.wins ?? 0;
           losses = duelData?.losses ?? 0;
           winstreak = duelData?.winstreak ?? 0; 
@@ -200,7 +229,7 @@ class DuelsStatsCommand extends minecraftCommand {
         : `[Duels]`;
       const divisionWins = !duel 
         ? wins
-        : (teamMode && duelData?.overall?.wins != null ? duelData.overall.wins : wins);
+        : (teamMode && duelData?.wins != null ? duelData.wins : wins);
       // use the overall win total for team submodes so division reflects total wins, not mode-only wins
       const division = getDivision(divisionWins, duel);
 
@@ -248,7 +277,7 @@ class DuelsStatsCommand extends minecraftCommand {
 
         const nextDivision = getDivision(nextRankupWins, duel);
         
-        return this.send(`${hypixelPlayer.nickname}'s next division is ${nextDivision} at ${nextRankupWins} Wins (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
+        return this.send(`${hypixelPlayer.nickname}'s next title is ${nextDivision} at ${nextRankupWins} wins (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
       }
       
       const winstreakText = bestWinstreak === 0 
