@@ -248,7 +248,7 @@ class DuelsStatsCommand extends minecraftCommand {
 
         const nextDivision = getDivision(nextRankupWins, duel);
         
-        return this.send(`${division} ${hypixelPlayer.nickname}'s next division: ${nextDivision} | Wins at next: ${nextRankupWins} (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
+        return this.send(`${hypixelPlayer.nickname}'s next division is ${nextDivision} at ${nextRankupWins} Wins (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
       }
       
       const winstreakText = bestWinstreak === 0 
