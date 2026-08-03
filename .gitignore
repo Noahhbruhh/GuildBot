@@ -92,8 +92,6 @@ lerna-debug.log
 .DS_Store
 Thumbs.db
 
-# config
+auth-cache
 config.json
-
-# messages
 messages.json
