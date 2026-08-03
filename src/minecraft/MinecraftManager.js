@@ -6,7 +6,7 @@ const ChatHandler = require("./handlers/ChatHandler.js");
 const CommandHandler = require("./CommandHandler.js");
 const config = require("../../config.json");
 const mineflayer = require("mineflayer");
-const Filter = require("bad-words");
+const { Filter } = require("bad-words");
 
 const filter = new Filter();
 const fileredWords = config.discord.other.filterWords ?? "";
