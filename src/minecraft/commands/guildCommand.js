@@ -46,7 +46,7 @@ class GuildInformationCommand extends minecraftCommand {
       const scaledWeeklyGexp = guild.expHistory.map((datum) => scaledGEXP(datum.exp)).reduce((a, b) => a + b, 0);
 
       this.send(
-        `${tagMessage}${guild.name} | ${guild.members.length} members, owned by ${guildMasterUsername} | LEVEL ${guild.level} | ${formatNumber(guild.totalWeeklyGexp)} Raw WGEXP ${formatNumber(scaledWeeklyGexp)} Scaled WGEXP`
+        ` (${guild.level}) ${tagMessage}${guild.name} | ${guild.members.length} members, owned by ${guildMasterUsername} | ${formatNumber(guild.totalWeeklyGexp)} Raw WGEXP ${formatNumber(scaledWeeklyGexp)} Scaled WGEXP`
       );
     } catch (error) {
       this.send(formatError(error));
