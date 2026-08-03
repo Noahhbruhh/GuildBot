@@ -340,7 +340,7 @@ const TIERS = [
   { name: "Master",      start: 1000,   step: 200   },
   { name: "Legend",      start: 2000,   step: 600   },
   { name: "Grandmaster", start: 5000,   step: 1000  },
-  { name: "Godlike",     start: 10000,  step: 2500  },
+  { name: "Godlike",     start: 10000,  step: 3000  },
   { name: "CELESTIAL",   start: 25000,  step: 5000  },
   { name: "DIVINE",      start: 50000,  step: 10000 },
   { name: "ASCENDED",    start: 100000, step: 10000 },
