@@ -189,26 +189,26 @@ class DuelsStatsCommand extends minecraftCommand {
           prefixMode = teamMode.toUpperCase();
         }
 
-        // if not, check if there are any team modes...
-        else if (TEAM_MODES[duel] && TEAM_MODES[duel].length > 0 && !teamMode) {
-          // ...and if so, sum the stats from those instead
-          // hypixel no longer ignores stats from 3s and 4s so we dont actually need to do this...
-          // but i'm keeping it just in case
+        // // if not, check if there are any team modes...
+        // else if (TEAM_MODES[duel] && TEAM_MODES[duel].length > 0 && !teamMode) {
+        //   // ...and if so, sum the stats from those instead
+        //   // hypixel no longer ignores stats from 3s and 4s so we dont actually need to do this...
+        //   // but i'm keeping it just in case
           
-          // sum mode branches (ignoring deleted games; might need to update if i miss any !!)
-          winstreak = duelData.winstreak ?? 0;
-          bestWinstreak = duelData.bestWinstreak ?? 0;
+        //   // sum mode branches (ignoring deleted games; might need to update if i miss any !!)
+        //   winstreak = duelData.winstreak ?? 0;
+        //   bestWinstreak = duelData.bestWinstreak ?? 0;
 
-          // summing loop
-          for (const [k, v] of Object.entries(duelData)) {
-            // deleted games are HERE vv
-            if (["2v2v2v2", "3v3v3v3", "ctf"].includes(k)) continue;
-            // deleted games are HERE ^^
-            wins += v.wins ?? 0;
-            losses += v.losses ?? 0;
-          }
-          wlRatio = losses > 0 ? parseFloat((wins / losses).toFixed(2)) : parseFloat(wins.toFixed(2));
-        } 
+        //   // summing loop
+        //   for (const [k, v] of Object.entries(duelData)) {
+        //     // deleted games are HERE vv
+        //     if (["2v2v2v2", "3v3v3v3", "ctf"].includes(k)) continue;
+        //     // deleted games are HERE ^^
+        //     wins += v.wins ?? 0;
+        //     losses += v.losses ?? 0;
+        //   }
+        //   wlRatio = losses > 0 ? parseFloat((wins / losses).toFixed(2)) : parseFloat(wins.toFixed(2));
+        // } 
           
         // if there aren't any team modes (meaning we are in the stats directory)...
         else {
