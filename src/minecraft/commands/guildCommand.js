@@ -33,9 +33,16 @@ class GuildInformationCommand extends minecraftCommand {
       // default to own guild
       if (args.length === 0) {
         guild = await hypixel.getGuild("player", player, {noCaching: false});
+        if (guild == null) {
+          return this.send("[ERROR] You are not in a guild.");
+        }
       // otherwise get from argument
       } else {
         guild = await hypixel.getGuild("name", args.join(" "), {noCaching: false});
+      }
+
+      if (guild == null) {
+        return this.send("[ERROR] Could not find a guild with that name.");
       }
 
       const guildMasterUUID = guild.members[0].uuid;
@@ -46,7 +53,7 @@ class GuildInformationCommand extends minecraftCommand {
       const scaledWeeklyGexp = guild.expHistory.map((datum) => scaledGEXP(datum.exp)).reduce((a, b) => a + b, 0);
 
       this.send(
-        ` (${guild.level}) ${tagMessage}${guild.name} | ${guild.members.length} members, owned by ${guildMasterUsername} | ${formatNumber(guild.totalWeeklyGexp)} Raw WGEXP ${formatNumber(scaledWeeklyGexp)} Scaled WGEXP`
+        `(${guild.level}) ${tagMessage}${guild.name} | ${guild.members.length} members, owned by ${guildMasterUsername} | ${formatNumber(guild.totalWeeklyGexp)}GEXP Raw | ${formatNumber(scaledWeeklyGexp)}GEXP Scaled`
       );
     } catch (error) {
       this.send(formatError(error));
