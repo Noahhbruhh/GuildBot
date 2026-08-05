@@ -95,7 +95,7 @@ class ScrimsCommand extends minecraftCommand {
       const data = response.data.user_data;
 
       if (!data) {
-        this.send(`[ERROR] ${prettyName(targetPlayer)} has no Scrims data.`);
+        this.send(`[ERROR] ${await prettyName(targetPlayer)} has no Scrims data.`);
         return;
       }
 

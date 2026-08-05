@@ -56,7 +56,7 @@ class KillClientCommand extends minecraftCommand {
         }
       }
 
-      bot.chat(`/gc ${prettyName(player)} is disconnecting me...`)
+      bot.chat(`/gc ${await prettyName(player)} is disconnecting me...`)
 
       await delay(2000);
       
