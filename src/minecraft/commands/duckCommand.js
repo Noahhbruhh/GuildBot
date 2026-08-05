@@ -9,7 +9,7 @@ class DuckCommand extends minecraftCommand {
     super(minecraft);
 
     this.name = "duck";
-    this.aliases = ["ducky", "ducks", "duckysougly", "duckysolucky"];
+    this.aliases = ["ducky", "ducks"];
     this.description = "Random image of a ducks.";
     this.options = [];
   }
@@ -21,7 +21,7 @@ class DuckCommand extends minecraftCommand {
   async onCommand(player, message) {
     // CREDITS: by @Kathund (https://github.com/Kathund)
     try {
-      const { data, status } = await get("https://imgs.kath.lol/ducky");
+      const { data, status } = await get("https://random-d.uk/api/v2/random");
       if (status !== 200) {
         throw "An error occured while fetching the image. Please try again later.";
       }
