@@ -1,12 +1,9 @@
 const { formatError, delay } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
-const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 
 const page_size = 8;
 
-const commandDir = "/home/container/src/minecraft/commands";
-
-class cmdsCommand extends minecraftCommand {
+class ShowCommandsCommand extends minecraftCommand {
   /** @param {import("minecraft-protocol").Client} minecraft */
   constructor(minecraft) {
     super(minecraft);
@@ -78,4 +75,4 @@ class cmdsCommand extends minecraftCommand {
   }
 }
 
-module.exports = cmdsCommand;
+module.exports = ShowCommandsCommand;
