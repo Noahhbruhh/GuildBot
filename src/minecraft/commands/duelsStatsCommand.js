@@ -49,13 +49,13 @@ const DUEL_ALIASES = {
   b: "bridge",
   blitz: "blitz",
   bow: "bow",
-  bowspleef: "bowspleef",
+  bowspleef: "bowSpleef",
   boxing: "boxing",
   classic: "classic",
   combo: "combo",
   megawalls: "megawalls",
-  nb: "nodebuff",
-  nodebuff: "nodebuff",
+  nb: "noDebuff",
+  nodebuff: "noDebuff",
   op: "op",
   parkour: "parkour",
   quakecraft: "quakecraft",
@@ -144,7 +144,7 @@ class DuelsStatsCommand extends minecraftCommand {
 
       // get hypixel player and duel stats
       //
-      const duelsRoot = hypixelPlayer.stats?.duels;
+      const duelsRoot = /** @type {Record<string, any>|undefined} */ (hypixelPlayer.stats?.duels);
       if (!duelsRoot) { 
         throw `${hypixelPlayer.nickname} has never played duels.`; 
       }
@@ -167,9 +167,13 @@ class DuelsStatsCommand extends minecraftCommand {
         bestWinstreak = duelsRoot.bestWinstreak ?? 0;
         wlRatio = duelsRoot.WLRatio ?? 0;
         
-      // duel mode given...
+      // if a duel mode is given...
       } else {
-        // ...specific mode stats
+        // ...get specific mode stats
+        if (!(duel in duelsRoot)) {
+          return this.send(`[ERROR] "${duel}" was an option, but it was not present in the stats object. Please contact @cherryrntz regarding this issue.`);
+        }
+        
         duelData = duelsRoot[duel] ?? {};
 
         // if a team mode is given...
