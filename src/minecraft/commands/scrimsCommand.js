@@ -1,4 +1,4 @@
-const { formatError } = require("../../contracts/helperFunctions.js");
+const { formatError, prettyName } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 
 // @ts-ignore
@@ -85,7 +85,7 @@ class ScrimsCommand extends minecraftCommand {
       let targetPlayer;
       
       if (args.length < 1) { // Default to sender
-        targetPlayer = player.strip();
+        targetPlayer = player;
       } else {
         targetPlayer = args[0];
       }
@@ -93,6 +93,11 @@ class ScrimsCommand extends minecraftCommand {
 
       const response = await get(`https://api.scrims.network/v1/user?username=${targetPlayer}`);
       const data = response.data.user_data;
+
+      if (!data) {
+        this.send(`[ERROR] ${prettyName(targetPlayer)} has no Scrims data.`);
+        return;
+      }
 
       const stats = data.stats["bridge"];
 
