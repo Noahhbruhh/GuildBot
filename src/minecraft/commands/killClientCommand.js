@@ -1,4 +1,4 @@
-const { formatError, isStaff, delay } = require("../../contracts/helperFunctions.js");
+const { formatError, isStaff, delay, prettyName } = require("../../contracts/helperFunctions.js");
 const { getUUID } = require("../../contracts/API/mowojangAPI.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
@@ -56,7 +56,7 @@ class KillClientCommand extends minecraftCommand {
         }
       }
 
-      this.send(`${player} is disconnecting me...`)
+      bot.chat(`/gc ${prettyName(player)} is disconnecting me...`)
 
       await delay(2000);
       
