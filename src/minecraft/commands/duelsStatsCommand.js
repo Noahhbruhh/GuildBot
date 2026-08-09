@@ -1,4 +1,4 @@
-const { formatNumber, formatError, getDivision, TIERS, REDUCED_REQUIREMENT_GAMEMODES } = require("../../contracts/helperFunctions.js");
+const { formatError, getDivision, TIERS, REDUCED_REQUIREMENT_GAMEMODES } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const hypixel = require("../../contracts/API/HypixelRebornAPI.js");
 
@@ -246,7 +246,7 @@ class DuelsStatsCommand extends minecraftCommand {
         const winIncrease = nextWins - wins;
         const pctWinIncrease = winIncrease / wins * 100;
 
-        return this.send(`${prefix} ${division} ${hypixelPlayer.nickname}'s next WLR: ${nextWLR} (+${difference.toFixed(2)}) | Wins at next WLR: ${nextWins} (+${winIncrease} / ${pctWinIncrease.toFixed(1)}%) | +${(1 / losses).toPrecision(3)} WLR per win`)
+        return this.send(`${prefix} ${division} ${hypixelPlayer.nickname}'s next WLR: ${nextWLR} (+${difference.toFixed(2)}) | Wins at next WLR: ${Number(nextWins).toLocaleString()} (+${Number(winIncrease).toLocaleString()} / ${pctWinIncrease.toFixed(1)}%) | +${(1 / losses).toPrecision(3)} WLR per win`)
       } // return gateway! we dont need to `} else {`
 
       // rankup check
@@ -281,14 +281,14 @@ class DuelsStatsCommand extends minecraftCommand {
 
         const nextDivision = getDivision(nextRankupWins, duel);
         
-        return this.send(`${hypixelPlayer.nickname}'s next title is ${nextDivision} at ${nextRankupWins} wins (+${nextRankupDiff}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
+        return this.send(`${hypixelPlayer.nickname}'s next title is ${nextDivision} at ${Number(nextRankupWins).toLocaleString()} wins (+${Number(nextRankupDiff).toLocaleString()}${actualDivisionWins > 0 ? ` / ${nextRankupPct}%` : ""})`);
       }
       
       const winstreakText = bestWinstreak === 0 
         ? "WS OFF" 
-        : `WS ${winstreak} BWS ${bestWinstreak}`;
+        : `WS ${Number(winstreak).toLocaleString()} BWS ${Number(bestWinstreak).toLocaleString()}`;
       
-      return this.send(`${prefix} ${division} ${hypixelPlayer.nickname} W ${formatNumber(wins)} L ${formatNumber(losses)} WLR ${wlRatio} | ${winstreakText}`); 
+      return this.send(`${prefix} ${division} ${hypixelPlayer.nickname} W ${Number(wins).toLocaleString()} L ${Number(losses).toLocaleString()} WLR ${wlRatio} | ${winstreakText}`); 
        
     } catch (error) { 
       this.send(formatError(error));
