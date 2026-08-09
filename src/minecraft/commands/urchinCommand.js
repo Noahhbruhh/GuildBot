@@ -46,13 +46,12 @@ class UrchinCommand extends minecraftCommand {
 
       const res = await fetch(url);
       if (res.status === 404) {
-        this.send(`${formatted_username} has no tags in Urchin. (404 error)`)
+        this.send(`Could not find ${formatted_username} in the Urchin database.`);
         return;
       }
 
       if (!res.ok) {
         throw `Urchin API error: ${res.status}`
-        return;
       }
 
       const data = await res.json();
@@ -86,7 +85,7 @@ class UrchinCommand extends minecraftCommand {
         s = s + `${ftag} ${reasontag}`;
       });
 
-      this.send(s.substring(0, 250));
+      this.send(s.substring(0, 236)); // allow for 20 extra characters just in case
       
     } catch (error) { 
       this.send(formatError(error)); 
