@@ -10,7 +10,7 @@ class IQCommand extends minecraftCommand {
 
     this.name = "iq";
     this.aliases = ["smart"];
-    this.description = "Get someone's IQ.";
+    this.description = `Get someone's IQ. ${SUPER_IQ_CHANCE * 100}% recursive chance for SUPER IQ!`;
     this.options = [
       {
         name: "player",
