@@ -1,0 +1,34 @@
+const minecraftCommand = require("../../contracts/minecraftCommand.js");
+
+class Command extends minecraftCommand {
+  /** @param {import("minecraft-protocol").Client} minecraft */
+  constructor(minecraft) {
+    super(minecraft);
+
+    this.name = "commandname";
+    this.aliases = [];
+    this.description = "Command description";
+    this.options = [
+      {
+        name: "optionname",
+        description: "Option description",
+        required: true
+      }
+    ];
+  }
+
+  /**
+   * @param {string} player
+   * @param {string} message
+   * */
+  async onCommand(player, message) {
+    try {
+      const args = this.getArgs(message);
+      
+    } catch (error) {
+      this.send(`[ERROR] ${error}`);
+    }
+  }
+}
+
+module.exports = Command;
