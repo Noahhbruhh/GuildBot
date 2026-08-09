@@ -13,9 +13,13 @@ const { get } = require("axios");
  * */
 function formatBestiaryMobs(mobs) {
   const output = [];
-  for (const mob of mobs) {
+  if (!mobs) return output;
+
+  const iterable = Array.isArray(mobs) ? mobs : Object.values(mobs);
+  for (const mob of iterable) {
+    if (!mob) continue;
     output.push({
-      name: mob.name.replace(/§./g, ""),
+      name: typeof mob.name === "string" ? mob.name.replace(/§./g, "") : "",
       cap: mob.cap,
       mobs: mob.mobs,
       bracket: mob.bracket
