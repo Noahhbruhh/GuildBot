@@ -45,15 +45,17 @@ class GuildInformationCommand extends minecraftCommand {
         return this.send("[ERROR] Could not find a guild with that name.");
       }
 
-      const guildMasterUUID = guild.members[0].uuid;
-      const guildMasterUsername = await getUsername(guildMasterUUID);
+      // find player with "Guild Master" rank
+      const guildMaster = guild.members.find((member) => member.rank === "Guild Master");
+      const guildMasterUUID = guildMaster?.uuid;
+      const guildMasterUsername = guildMasterUUID ? await getUsername(guildMasterUUID) : "Unknown";
       const tagMessage = guild.tag ? `[${guild.tag}] ` : "";
 
       // Scale all exp in exp history then sum
       const scaledWeeklyGexp = guild.expHistory.map((datum) => scaledGEXP(datum.exp)).reduce((a, b) => a + b, 0);
 
       this.send(
-        `(${guild.level}) ${tagMessage}${guild.name} | ${guild.members.length} members, owned by ${guildMasterUsername} | ${formatNumber(guild.totalWeeklyGexp)}GEXP Raw | ${formatNumber(scaledWeeklyGexp)}GEXP Scaled`
+        `(${guild.level}) ${tagMessage}${guild.name} | ${guild.members.length} members, owned by ${guildMasterUsername} | ${formatNumber(guild.totalWeeklyGexp)} Raw GEXP (${formatNumber(scaledWeeklyGexp)} Scaled)`
       );
     } catch (error) {
       this.send(formatError(error));
