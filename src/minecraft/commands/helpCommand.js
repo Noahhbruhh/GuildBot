@@ -50,8 +50,8 @@ class helpCommand extends minecraftCommand {
       }
       
       // build the base command info
-      const aliasText = (cmd.aliases && cmd.aliases.length !== 0) ? cmd.aliases.join("/") : "No aliases";
-      let finalMessage = `${cmd.name} (${aliasText}) | ${cmd.description ?? "No description"}`;
+      const aliasText = (cmd.aliases && cmd.aliases.length !== 0) ? `(${cmd.aliases.join("/")}) ` : "";
+      let finalMessage = `${cmd.name} ${aliasText}| ${cmd.description ?? "No description"}`;
 
       // append options if they exist
       if (cmd.options && cmd.options.length > 0) {
