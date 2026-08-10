@@ -44,24 +44,9 @@ class DuelsTitlesCommand extends minecraftCommand {
 
       // iter through all values (duel gamemodes) in duelsRoot
       for (const [modeName, modeStats] of Object.entries(duelsRoot)) {
+        if (!modeStats) continue;
 
-        // if mode stats isn't a dictionary, skip it
-        if (typeof modeStats !== "object") continue;
-
-        let wins = 0;
-
-        // if overall is included in the mode stats, that means there are submodes - sum them instead
-        if ("overall" in modeStats) {
-          for (const [k, v] of Object.entries(modeStats)) {
-            // deleted games are HERE vv
-            if (["overall", "2v2v2v2", "3v3v3v3", "ctf"].includes(k)) continue;
-            // deleted games are HERE ^^
-            wins += v.wins ?? 0;
-          }
-        } else {
-          wins = modeStats.wins ?? 0;
-        }
-
+        const wins = modeStats.wins ?? 0;
         if (wins > 0) {
           divisions[modeName] = { "division" : getDivision(wins, modeName), "wins" : wins };
         }
@@ -71,7 +56,7 @@ class DuelsTitlesCommand extends minecraftCommand {
       const topDivisions = Object.entries(divisions).sort((a, b) => b[1].wins - a[1].wins).slice(0, MAX_TITLES);
       const topDivisionsString = topDivisions.map(d => `${d[0].toUpperCase()} ${d[1].division} (${d[1].wins} W)`).join(" | ");
 
-      this.send(`${hypixelPlayer.nickname}'s top ${MAX_TITLES} titles : ${topDivisionsString}`);
+      this.send(`${hypixelPlayer.nickname}'s top ${MAX_TITLES} titles: ${topDivisionsString}`);
       
     } catch (error) { 
       this.send(formatError(error));
