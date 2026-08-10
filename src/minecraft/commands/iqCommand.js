@@ -37,8 +37,12 @@ class IQCommand extends minecraftCommand {
 
       const iq = Math.floor(Math.random() * 200) + 1 + superIQCount * 100;
 
+      let prettyname;
+      try { prettyname = await prettyName(targetPlayer); } 
+      catch (error) { return this.send(`[ERROR] Player ${targetPlayer} not found.`); }
+
       // add 1 exclam for each super IQ
-      this.send(`${await prettyName(targetPlayer)} has ${iq} IQ${"!".repeat(superIQCount + 1)}`);
+      this.send(`${prettyname} has ${iq} IQ${"!".repeat(superIQCount + 1)}`);
       
     } catch (error) {
       this.send(`[ERROR] ${error}`);
