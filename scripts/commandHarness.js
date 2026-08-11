@@ -103,7 +103,10 @@ async function runCommand(command, input) {
 
 function printHelp(commands) {
   console.log("Type a command like !help, !tntgames, or !skyblock Player");
-  console.log("Type 'list' to show commands, or 'quit' to exit.\n");
+  console.log("Type 'list' or 'commands' to show commands, or 'quit' to exit.\n");
+}
+
+function displayAllCommands(commands) {
   console.log("Available commands:");
   for (const command of commands) {
     const aliases = command.aliases?.length ? ` (${command.aliases.join(", ")})` : "";
@@ -133,8 +136,14 @@ async function main() {
       return;
     }
 
-    if (raw === "list" || raw === "help") {
+    if (raw === "help") {
       printHelp(commands);
+      rl.prompt();
+      return;
+    }
+
+    if (["list", "commands"].includes(raw)) {
+      displayAllCommands(commands);
       rl.prompt();
       return;
     }
