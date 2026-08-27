@@ -9,7 +9,7 @@ const commandsDir = path.join(projectRoot, "src", "minecraft", "commands");
 const configPath = path.join(projectRoot, "config.json");
 
 global.bot = new EventEmitter();
-global.bot.username = "cherryrntz";
+global.bot.username = "ObruhmaGang";
 global.bot._client = { chat: () => {} };
 global.bot.chat = async () => {};
 

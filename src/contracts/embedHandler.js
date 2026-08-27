@@ -12,7 +12,7 @@ class Embed extends EmbedBuilder {
 
     this.setColor(3447003);
     this.setFooter({
-      text: `by @duckysolucky and @cherryrntz | /help [command] for more information`,
+      text: `by @duckysolucky and NoahBruhh and Teun | /help [command] for more information`,
       iconURL: "https://imgur.com/tgwQJTX.png"
     });
   }
@@ -33,7 +33,7 @@ class ErrorEmbed extends Embed {
     this.setAuthor({ name: "An Error has occurred" });
     this.setColor(15548997);
     this.setFooter({
-      text: `by @duckysolucky and @cherryrntz | /help [command] for more information`,
+      text: `by @duckysolucky and NoahBruhh and Teun | /help [command] for more information`,
       iconURL: "https://imgur.com/tgwQJTX.png"
     });
 
@@ -56,7 +56,7 @@ class SuccessEmbed extends Embed {
     this.setAuthor({ name: "Success" });
     this.setColor(5763719);
     this.setFooter({
-      text: `by @duckysolucky and @cherryrntz | /help [command] for more information`,
+      text: `by @duckysolucky and NoahBruhh and Teun | /help [command] for more information`,
       iconURL: "https://imgur.com/tgwQJTX.png"
     });
 

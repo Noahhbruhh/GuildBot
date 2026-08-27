@@ -280,7 +280,7 @@ function titleCase(str) {
     .join(" ");
 }
 
-// everything past this is @cherryrntz
+// everything past this is NoahBruhh and Teun
 
 /**
  * 

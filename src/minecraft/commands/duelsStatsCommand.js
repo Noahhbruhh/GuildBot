@@ -171,7 +171,7 @@ class DuelsStatsCommand extends minecraftCommand {
       } else {
         // ...get specific mode stats
         if (!(duel in duelsRoot)) {
-          return this.send(`[ERROR] "${duel}" was an option, but it was not present in the stats object. Please contact @cherryrntz regarding this issue.`);
+          return this.send(`[ERROR] "${duel}" was an option, but it was not present in the stats object. Please contact NoahBruhh and Teun regarding this issue.`);
         }
         
         duelData = duelsRoot[duel] ?? {};

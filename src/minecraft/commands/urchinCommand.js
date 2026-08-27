@@ -2,7 +2,7 @@ const { formatError } = require("../../contracts/helperFunctions.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 const { resolveUsernameOrUUID, getUUID } = require("../../contracts/API/mowojangAPI.js");
 
-const API_KEY = "4c3afa72-6a7f-4c6b-b03d-aa48f450e4ef" // cherryrntz's key! please dont steal it </3
+const API_KEY = "4c3afa72-6a7f-4c6b-b03d-aa48f450e4ef" // NoahBruhh and Teun's key! please dont steal it </3
 
 class UrchinCommand extends minecraftCommand {
   /** @param {import("minecraft-protocol").Client} minecraft */

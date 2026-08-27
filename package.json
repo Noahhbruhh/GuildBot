@@ -1,7 +1,7 @@
 {
   "name": "obama-gang-guild-bot",
   "version": "3.1.16.3",
-  "description": "A Hypixel guild chat and Discord chat bridge (original by DuckySoLucky, maintained by cherryrntz)",
+  "description": "A Hypixel guild chat and Discord chat bridge (original by DuckySoLucky, maintained by NoahBruhh and Teun)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vai-tv/ObamaGang-Guild-Bot.git"
+    "url": "git+https://github.com/Noahhbruhh/GuildBot.git"
   },
   "keywords": [
     "hypixel",
@@ -22,12 +22,12 @@
     "chat",
     "bridge"
   ],
-  "author": "DuckySoLucky (and cherryrntz)",
+  "author": "DuckySoLucky (and NoahBruhh and Teun)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vai-tv/ObamaGang-Guild-Bot/issues"
+    "url": "https://github.com/Noahhbruhh/GuildBot/issues"
   },
-  "homepage": "https://github.com/vai-tv/ObamaGang-Guild-Bot#readme",
+  "homepage": "https://github.com/Noahhbruhh/GuildBot#readme",
   "dependencies": {
     "@discordjs/rest": "^2.6.3",
     "axios": "1.19.0",

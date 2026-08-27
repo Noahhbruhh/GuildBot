@@ -1,5 +1,5 @@
 // Credits https://github.com/Altpapier/hypixel-discord-guild-bridge/blob/master/helper/messageToImage.js
-// bug fixes by @cherryrntz C:
+// bug fixes by NoahBruhh and Teun C:
 
 const axios = require("axios");
 

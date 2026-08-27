@@ -1,4 +1,4 @@
-// NOTE : @cherryrntz has changed the API URLs to mojang apis, NOT mowojang !!
+// NOTE : NoahBruhh and Teun has changed the API URLs to mojang apis, NOT mowojang !!
 
 // @ts-ignore
 const { get } = require("axios");

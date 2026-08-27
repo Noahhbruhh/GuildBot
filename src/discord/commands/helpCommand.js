@@ -39,7 +39,7 @@ module.exports = {
             }
           )
           .setFooter({
-            text: "by @duckysolucky and @cherryrntz | /help [command] for more information",
+            text: "by @duckysolucky and NoahBruhh and Teun | /help [command] for more information",
             iconURL: "https://imgur.com/tgwQJTX.png"
           });
 
@@ -79,7 +79,7 @@ module.exports = {
           .setTitle(`**${type === "discord" ? "/" : config.minecraft.bot.prefix}${command.name}**`)
           .setDescription(description + "\n")
           .setFooter({
-            text: "by @duckysolucky and @cherryrntz | () = required, [] = optional",
+            text: "by @duckysolucky and NoahBruhh and Teun | () = required, [] = optional",
             iconURL: "https://imgur.com/tgwQJTX.png"
           });
 
