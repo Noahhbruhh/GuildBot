@@ -1,7 +1,7 @@
 {
   "name": "rogue-guild-bot",
   "version": "3.1.16.3",
-  "description": "A Hypixel guild chat and Discord chat bridge (original by DuckySoLucky, maintained by NoahBruhh and Teun)",
+  "description": "A Hypixel guild chat and Discord chat bridge (original by DuckySoLucky, maintained by NoahBruhh)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Noahhbruhh/GuildBot.git"
+    "url": "git+https://github.com/Noahhbruhh/GuildBot"
   },
   "keywords": [
     "hypixel",
@@ -22,12 +22,12 @@
     "chat",
     "bridge"
   ],
-  "author": "DuckySoLucky (and NoahBruhh and Teun)",
+  "author": "DuckySoLucky (and NoahBruhh)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Noahhbruhh/GuildBot/issues"
+    "url": "https://github.com/vai-tv/ObamaGang-Guild-Bot/issues"
   },
-  "homepage": "https://github.com/Noahhbruhh/GuildBot#readme",
+  "homepage": "https://github.com/vai-tv/ObamaGang-Guild-Bot#readme",
   "dependencies": {
     "@discordjs/rest": "^2.6.3",
     "axios": "1.19.0",
