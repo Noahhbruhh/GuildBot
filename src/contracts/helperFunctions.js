@@ -248,7 +248,7 @@ function splitMessage(message, amount) {
  * @returns {string}
  */
 function formatError(error) {
-  return error.toString().replace("[hypixel-api-reborn] ", "").replace("For help join our Discord Server https://discord.gg/NSEBNMM", "").replace("Error:", "[ERROR]");
+  return error.toString().replace("[hypixel-api-reborn] ", "").replace("[Hypixel-API-Reborn] ", "").replace("For help join our Discord Server https://discord.gg/NSEBNMM", "").replace("Error:", "[ERROR]");
 }
 
 /**
