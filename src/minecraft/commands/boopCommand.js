@@ -28,7 +28,7 @@ class BoopCommand extends minecraftCommand {
     try {
       const args = this.getArgs(message);
       if (args.length === 0) {
-        throw "You must provide a user to boo!";
+        throw "You must provide a user to boop!";
       }
 
       player = args[0];

@@ -3,21 +3,21 @@ const { resolveUsernameOrUUID } = require("../../contracts/API/mowojangAPI.js");
 const minecraftCommand = require("../../contracts/minecraftCommand.js");
 
 /** @type {((p1: string, p2: string) => string)[]} */
-const kissMessages = [
-  (p1, p2) => `${p1} has been kissed by ${p2} <3`,
-  (p1, p2) => `${p2} gives ${p1} a warm kiss <3`,
-  (p1, p2) => `${p2} kisses ${p1}! <3`,
-  (p1, p2) => `${p2} shares a wonderful kiss with ${p1} <3`
+const cuddleMessages = [
+  (p1, p2) => `${p1} has been cuddled by ${p2} <3`,
+  (p1, p2) => `${p2} gives ${p1} a cozy cuddle <3`,
+  (p1, p2) => `${p2} cuddles up with ${p1}! <3`,
+  (p1, p2) => `${p2} snuggles in close with ${p1} <3`
 ];
 
-class KissCommand extends minecraftCommand {
+class CuddleCommand extends minecraftCommand {
   /** @param {import("minecraft-protocol").Client} minecraft */
   constructor(minecraft) {
     super(minecraft);
 
-    this.name = "kiss";
+    this.name = "cuddle";
     this.aliases = [];
-    this.description = "Kiss somebody! (requested by @Alirezamil)";
+    this.description = "Cuddle somebody!";
     this.options = [
       {
         name: "username",
@@ -32,34 +32,29 @@ class KissCommand extends minecraftCommand {
    * @param {string} message
    * */
   async onCommand(player, message) {
-    
     try {
-
       const args = this.getArgs(message);
       if (args.length < 1) {
-        this.send("You can't kiss nobody!");
+        this.send("You can't cuddle nobody!");
         return;
       }
 
       try {
         const username = (await resolveUsernameOrUUID(args[0])).username;
-        const message = kissMessages[Math.floor(Math.random() * kissMessages.length)];
+        const message = cuddleMessages[Math.floor(Math.random() * cuddleMessages.length)];
 
         if (username.toLowerCase() === player.toLowerCase()) {
-          return this.send("bruh you can't kiss yourself");
+          return this.send("you can't cuddle yourself! Try cuddling someone else instead");
         }
-        
+
         this.send(message(username, player));
-        
       } catch (error) {
-        return this.send("Invalid username.")
+        return this.send("Invalid username.");
       }
-
-
-    } catch (error) { 
+    } catch (error) {
       this.send(formatError(error));
-    } 
+    }
   }
 }
 
-module.exports = KissCommand;
+module.exports = CuddleCommand;
