@@ -363,7 +363,7 @@ const TIERS = [
   { name: "DIVINE",      start: 50000,  step: 10000 },
   { name: "ASCENDED",    start: 100000, step: 10000 },
 ];
-const REDUCED_REQUIREMENT_GAMEMODES = ["bridge", "boxing", "megawalls", "nodebuff", "parkour"]
+const REDUCED_REQUIREMENT_GAMEMODES = ["bridge", "boxing", "megawalls", "noDebuff", "parkour"]
 
 /**
  * Returns the division string for a given win count.

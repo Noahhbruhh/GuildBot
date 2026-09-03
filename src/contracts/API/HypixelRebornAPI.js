@@ -1,5 +1,6 @@
 const HypixelAPIReborn = require("hypixel-api-reborn");
 const config = require("../../../config.json");
+const { attachMissingDuelsModes } = require("./duelsExtraModes.js");
 
 // How long a successful player lookup stays cached, in seconds. Hypixel applies its own
 // per-player lookup cooldown, so anything shorter than this just invites 429s.
@@ -49,6 +50,51 @@ function isRecentLookupError(error) {
   return /requested that player recently/i.test(String(error));
 }
 
+/**
+ * Raw `player.stats.Duels` payloads, keyed by undashed UUID, kept only long enough for the
+ * getPlayer wrapper below to read them. The library parses the player response into structures
+ * that drop the raw stats, and its Duels structure is missing several gamemodes, so we hold on
+ * to the raw duels blob from the response that produced each player.
+ * @type {Map<string, Record<string, any>>}
+ */
+const rawDuelsByUuid = new Map();
+
+/**
+ * Normalizes a UUID to the undashed lowercase form used as the stash key.
+ * @param {string} uuid
+ * @returns {string}
+ */
+function normalizeUuid(uuid) {
+  return String(uuid).replace(/-/g, "").toLowerCase();
+}
+
+// eslint-disable-next-line no-underscore-dangle
+const makeRequest = hypixel._makeRequest.bind(hypixel);
+
+// The library's endpoint methods look `_makeRequest` up on the client at call time, so wrapping
+// it here catches every player request, including ones served from the library's own cache.
+// It has to stay non-enumerable: those methods spread the client's own properties over the
+// already-bound request function, so an enumerable override would shadow it with an unbound one.
+Object.defineProperty(hypixel, "_makeRequest", {
+  configurable: true,
+  enumerable: false,
+  writable: true,
+  value: async function (options, url, useRateLimitManager) {
+    const response = await makeRequest(options, url, useRateLimitManager);
+
+    if (typeof url === "string" && url.startsWith("/player?uuid=")) {
+      const duels = response?.player?.stats?.Duels;
+      const uuid = response?.player?.uuid;
+
+      if (duels && uuid) {
+        rawDuelsByUuid.set(normalizeUuid(uuid), duels);
+      }
+    }
+
+    return response;
+  }
+});
+
 const getPlayer = hypixel.getPlayer.bind(hypixel);
 
 /**
@@ -91,7 +137,15 @@ hypixel.getPlayer = async function (query, options) {
   inFlightLookups.set(key, request);
 
   try {
-    return await request;
+    const player = await request;
+
+    const stashKey = player?.uuid ? normalizeUuid(player.uuid) : undefined;
+    if (stashKey !== undefined) {
+      attachMissingDuelsModes(player, rawDuelsByUuid.get(stashKey));
+      rawDuelsByUuid.delete(stashKey);
+    }
+
+    return player;
   } finally {
     inFlightLookups.delete(key);
   }
