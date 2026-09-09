@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rogue Guild Bot — Terminal</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#9876;</text></svg>" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="mark">&#9876;</div>
+        <div>
+          <h1>Rogue Guild Bot <span class="readonly" title="This viewer cannot start, stop or change anything">read&#8209;only</span></h1>
+          <p class="sub" id="host">&mdash;</p>
+        </div>
+      </div>
+
+      <div class="pill" id="statusPill" data-state="stopped">
+        <span class="dot"></span>
+        <span id="statusText">stopped</span>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="link-status" id="link">
+        <span class="dot"></span>
+        <span id="linkText">connecting</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Uptime</div>
+        <div class="value" id="uptime">&mdash;</div>
+      </div>
+      <div class="card">
+        <div class="label">Memory</div>
+        <div class="value" id="rss">&mdash;</div>
+      </div>
+      <div class="card">
+        <div class="label">CPU</div>
+        <div class="value" id="cpu">&mdash;</div>
+      </div>
+      <div class="card">
+        <div class="label">PID</div>
+        <div class="value" id="pid">&mdash;</div>
+      </div>
+      <div class="card">
+        <div class="label">Restarts</div>
+        <div class="value" id="restarts">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Next restart</div>
+        <div class="value" id="nextRestart">&mdash;</div>
+      </div>
+      <div class="card git">
+        <div class="label">Repository</div>
+        <div class="value" id="branch">&mdash;</div>
+        <div class="commit" id="commit">&mdash;</div>
+      </div>
+    </div>
+
+    <section class="terminal">
+      <div class="term-bar">
+        <span class="term-title">Terminal</span>
+        <input type="search" id="filter" placeholder="filter output&hellip;" autocomplete="off" spellcheck="false" />
+        <label class="toggle"><input type="checkbox" id="follow" checked /> Follow</label>
+        <label class="toggle"><input type="checkbox" id="stamps" /> Timestamps</label>
+        <div class="spacer"></div>
+        <span class="count" id="count">0 lines</span>
+        <button class="ghost" id="btnDownload">&#8681; Save</button>
+        <button class="ghost" id="btnClear">Clear</button>
+      </div>
+      <div id="log"><span class="empty">Waiting for output&hellip;</span></div>
+    </section>
+  </div>
+
+  <div id="toasts"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
