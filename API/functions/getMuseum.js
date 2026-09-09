@@ -2,8 +2,12 @@
 const config = require("../../config.json");
 // @ts-ignore
 const { get } = require("axios");
+const { autoSweep } = require("../utils/expiringCache.js");
 
+const CACHE_TTL = 300000;
 const cache = new Map();
+
+autoSweep(cache, CACHE_TTL);
 
 /**
  *
@@ -15,7 +19,7 @@ async function getMuseum(profileID, uuid) {
   if (cache.has(profileID)) {
     const data = cache.get(profileID);
 
-    if (data.last_save + 300000 > Date.now()) {
+    if (data.last_save + CACHE_TTL > Date.now()) {
       return data.data;
     }
   }

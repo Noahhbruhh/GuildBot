@@ -3,12 +3,16 @@ const { getUUID, getUsername } = require("../../src/contracts/API/mowojangAPI.js
 const { formatUsername } = require("../../src/contracts/helperFunctions.js");
 const { getMuseum } = require("./getMuseum.js");
 const { getGarden } = require("./getGarden.js");
+const { autoSweep } = require("../utils/expiringCache.js");
 const { isUuid } = require("../utils/uuid.js");
 const config = require("../../config.json");
 // @ts-ignore
 const { get } = require("axios");
 
+const CACHE_TTL = 300000;
 const cache = new Map();
+
+autoSweep(cache, CACHE_TTL);
 
 /**
  *
@@ -39,7 +43,7 @@ async function getLatestProfile(uuid, options = { museum: false, garden: false }
   if (cache.has(uuid)) {
     const data = cache.get(uuid);
 
-    if (data.last_save + 300000 > Date.now()) {
+    if (data.last_save + CACHE_TTL > Date.now()) {
       return data;
     }
   }

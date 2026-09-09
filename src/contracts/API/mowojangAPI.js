@@ -2,9 +2,14 @@
 
 // @ts-ignore
 const { get } = require("axios");
+const { autoSweep } = require("../../../API/utils/expiringCache.js");
 
+const CACHE_TTL = 43200000;
 const uuidCache = new Map();
 const usernameCache = new Map();
+
+autoSweep(uuidCache, CACHE_TTL);
+autoSweep(usernameCache, CACHE_TTL);
 
 /**
  * Get UUID from username
@@ -16,7 +21,7 @@ async function getUUID(username) {
     if (uuidCache.has(username)) {
       const data = uuidCache.get(username);
 
-      if (data.last_save + 43200000 > Date.now()) {
+      if (data.last_save + CACHE_TTL > Date.now()) {
         return data.id;
       }
     }
@@ -51,7 +56,7 @@ async function getUsername(uuid) {
     if (usernameCache.has(uuid)) {
       const data = usernameCache.get(uuid);
 
-      if (data.last_save + 43200000 > Date.now()) {
+      if (data.last_save + CACHE_TTL > Date.now()) {
         return data.username;
       }
     }
