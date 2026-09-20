@@ -33,6 +33,8 @@ async function fetchFeed(url) {
 
 if (config.minecraft.hypixelUpdates.enabled === true) {
   if (config.minecraft.hypixelUpdates.hypixelNews === true) {
+    // Seed the seen-list first so an enable does not replay every old headline.
+    checkForHypixelUpdates(true);
     setInterval(checkForHypixelUpdates, NEWS_INTERVAL);
   }
 
@@ -122,7 +124,6 @@ async function checkForHypixelUpdates(firstTime = false) {
   }
 }
 
-checkForHypixelUpdates(true);
 
 let skyblockVersion;
 async function checkForSkyblockVersion() {
