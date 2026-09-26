@@ -66,18 +66,22 @@ function getCustomTime(events, value) {
 // --- RANDOM MESSAGE EVERY X HOURS ---
 
 const broadcastMessages = messages.broadcasts;
-const randomMessageInterval = config.other.broadcastInterval * 60 * 60 * 1000;
+const broadcastHours = Number(config.other.broadcastInterval);
 
-setInterval(async () => {
-  try {
-    const broadcastBot = new minecraftCommand(bot);
-    broadcastBot.officer = false; // sends to GC natively
+// Set other.broadcastInterval to 0 to stop the automated broadcasts. The guard
+// is also a safety net: a zero or missing value previously reached setInterval
+// as 0 or NaN, which fires on every tick and would flood guild chat.
+if (Number.isFinite(broadcastHours) && broadcastHours > 0) {
+  setInterval(async () => {
+    try {
+      const broadcastBot = new minecraftCommand(bot);
+      broadcastBot.officer = false; // sends to GC natively
 
-    const randomText = broadcastMessages[Math.floor(Math.random() * broadcastMessages.length)];
+      const randomText = broadcastMessages[Math.floor(Math.random() * broadcastMessages.length)];
 
-    broadcastBot.send(`[BROADCAST] ${randomText}`);
-
-  } catch (error) {
-    console.error("Failed to send automated broadcast:", error);
-  }
-}, randomMessageInterval);
+      broadcastBot.send(`[BROADCAST] ${randomText}`);
+    } catch (error) {
+      console.error("Failed to send automated broadcast:", error);
+    }
+  }, broadcastHours * 60 * 60 * 1000);
+}
