@@ -3,7 +3,7 @@ const eventHandler = require("../../contracts/EventHandler.js");
 const Logger = require("../.././Logger.js");
 
 class StateHandler extends eventHandler {
-  /** @param {import("minecraft-protocol").Client} minecraft */
+  /** @param {import("../MinecraftManager.js")} minecraft */
   constructor(minecraft) {
     super();
 
@@ -17,13 +17,20 @@ class StateHandler extends eventHandler {
   }
 
   onError(error) {
-    if (this.isConnectionResetError(error)) return;
+    // Once logged in, a dropped connection also raises "end", and that is what
+    // drives the reconnect. Before login there is no "end", so this handler is
+    // the only chance to retry — it used to just log and give up for good.
+    const loggedIn = this.bot?.player !== undefined;
 
     if (this.isConnectionRefusedError(error)) {
-      return console.error("Connection refused while attempting to login via the Minecraft client");
+      console.error("Connection refused while attempting to login via the Minecraft client");
+    } else if (!this.isConnectionResetError(error)) {
+      console.warn(error);
     }
 
-    console.warn(error);
+    if (loggedIn === false) {
+      this.minecraft.stateHandler.onFailedLogin(`failed to connect (${error.code ?? error.message})`);
+    }
   }
 
   isConnectionResetError(error) {

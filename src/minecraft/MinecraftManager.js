@@ -24,6 +24,17 @@ class MinecraftManager extends CommunicationBridge {
   }
 
   connect() {
+    // Drop any previous client before replacing it. A stale socket that logs in
+    // afterwards races the new one, and Hypixel answers two sessions on one
+    // account by kicking both. "restart" tells StateHandler this was planned.
+    if (typeof this.bot?.quit === "function") {
+      try {
+        this.bot.quit("restart");
+      } catch (error) {
+        // already closed, nothing to tear down
+      }
+    }
+
     global.bot = this.createBotConnection();
     this.bot = global.bot; // Fixed: Use global.bot instead of undefined 'bot'
 
@@ -37,6 +48,8 @@ class MinecraftManager extends CommunicationBridge {
       require("./other/skyblockNotifier.js");
       require("./other/alphaPlayerCountTracker.js");
     });
+
+    this.stateHandler.armLoginTimeout();
   }
 
   createBotConnection() {

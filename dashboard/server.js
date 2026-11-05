@@ -276,17 +276,22 @@ function msUntil(hours, minutes) {
 }
 
 async function runScheduledRestart() {
-  // Never spawn a second bot alongside one we do not own.
-  if (!supervisor.running) {
-    const strays = await findStrayBots();
-    if (strays.length) {
+  // Check for strays every night, not just when our own bot is down. A second
+  // bot started by hand once survived 26 days of restarts unnoticed, fighting
+  // ours over the same Minecraft account.
+  const strays = await findStrayBots();
+
+  if (strays.length) {
+    if (!supervisor.running) {
       notice(`Skipping scheduled restart — a bot is running outside this viewer (pid ${strays.join(", ")}).`);
       return;
     }
-    notice("Scheduled restart — bot was down, bringing it back up.");
-  } else {
-    notice(`Scheduled ${RESTART_AT} restart — cycling the bot.`);
+
+    notice(`Warning: ${strays.length} bot process(es) running outside this viewer (pid ${strays.join(", ")}).`);
+    notice("Two bots on one account kick each other off Hypixel. Stop the stray ones.");
   }
+
+  notice(supervisor.running ? `Scheduled ${RESTART_AT} restart — cycling the bot.` : "Scheduled restart — bot was down, bringing it back up.");
 
   await supervisor.restart();
 }
@@ -390,11 +395,14 @@ server.listen(PORT, BIND.host, async () => {
 /** Finds `node index.js` processes for this project that we did not spawn. */
 function findStrayBots() {
   return new Promise((resolve) => {
+    // Our own child is not a stray, so it must be excluded explicitly.
+    const ownBot = supervisor.child ? supervisor.child.pid : null;
+
     fs.readdir("/proc", (error, entries) => {
       if (error) return resolve([]);
       const found = [];
       for (const entry of entries) {
-        if (!/^\d+$/.test(entry) || Number(entry) === process.pid) continue;
+        if (!/^\d+$/.test(entry) || Number(entry) === process.pid || Number(entry) === ownBot) continue;
         try {
           const cmdline = fs.readFileSync(`/proc/${entry}/cmdline`, "utf8").split("\0").filter(Boolean);
           if (cmdline.length < 2 || !/node$/.test(cmdline[0]) || !cmdline[1].endsWith("index.js")) continue;

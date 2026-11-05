@@ -8,6 +8,7 @@ class Application {
     require("./Configuration.js");
     require("./Updater.js");
     require("./Logger.js");
+    silenceDependencyNotices();
     if (!existsSync("./data/")) mkdirSync("./data/", { recursive: true });
     if (!existsSync("./data/linked.json")) writeFileSync("./data/linked.json", JSON.stringify({}));
     if (!existsSync("./data/inactivity.json")) writeFileSync("./data/inactivity.json", JSON.stringify({}));
@@ -31,6 +32,19 @@ class Application {
     setInterval(() => {
       if (global.gc) global.gc(); // Optional garbage collection hint if enabled
     }, 600000); 
+  }
+}
+
+/**
+ * skyhelper-networth polls npm every 10 minutes and warns that a newer version
+ * exists, which put thousands of identical lines into the logs. Only the
+ * version check is stopped here; networth calculation is untouched.
+ */
+function silenceDependencyNotices() {
+  try {
+    require("skyhelper-networth").UpdateManager.disable();
+  } catch (error) {
+    // older copies do not expose UpdateManager; nothing to silence
   }
 }
 
